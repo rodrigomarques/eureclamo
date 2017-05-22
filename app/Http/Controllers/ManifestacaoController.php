@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -193,7 +192,7 @@ class ManifestacaoController extends ConfigController
                                 $headers .= "Content-type: text/html; charset=UTF-8\r\n";
                                 $headers .= "From: contato.eureclamo@gmail.com\r\n"; // remetente
                                 $headers .= "Return-Path: contato.eureclamo@gmail.com\r\n"; // return-path
-                                $envio = mail("marques.coti@gmail.com", "Assunto", ""
+                                $envio = mail($p["USUARIO_email"], "EU RECLAMO::Manifestação", ""
                                         . "Prezados Senhores, ".
 										$request->input("msginicio")." <br><br>
 

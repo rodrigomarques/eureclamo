@@ -1,6 +1,73 @@
-@extends('admin.layout')
+<!DOCTYPE html>
+<html lang="en">
 
-@section('conteudo')
+<head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>EU RECLAMO</title>
+
+    <!-- Bootstrap Core CSS -->
+    <link href="{{ asset('bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+
+    <!-- Custom Fonts -->
+    <link href="{{ asset('font-awesome/css/font-awesome.min.css') }}" rel="stylesheet" type="text/css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/ionicons/2.0.1/css/ionicons.min.css">
+  <!-- jvectormap -->
+    <link rel="stylesheet" href="{{ asset('plugins/jvectormap/jquery-jvectormap-1.2.2.css') }}">
+    <!-- Theme style -->
+    <link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
+    <!-- AdminLTE Skins. Choose a skin from the css/skins
+         folder instead of downloading all of them to reduce the load. -->
+    <link rel="stylesheet" href="{{ asset('dist/css/skins/_all-skins.min.css') }}">
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+    <style>
+       
+        
+    </style>
+    
+    
+
+            <!-- jQuery 2.2.3 -->
+            <script src="{{ asset('plugins/jQuery/jquery-2.2.3.min.js') }}"></script>
+            <!-- Bootstrap 3.3.6 -->
+            <script src="{{ asset('bootstrap/js/bootstrap.min.js') }}"></script>
+            <!-- FastClick -->
+            <script src="{{ asset('plugins/fastclick/fastclick.js') }}"></script>
+            <!-- AdminLTE App -->
+            <script src="{{ asset('dist/js/app.min.js') }}"></script>
+            <!-- Sparkline -->
+            <script src="{{ asset('plugins/sparkline/jquery.sparkline.min.js') }}"></script>
+            <!-- jvectormap -->
+            <script src="{{ asset('plugins/jvectormap/jquery-jvectormap-1.2.2.min.js') }}"></script>
+            <script src="{{ asset('plugins/jvectormap/jquery-jvectormap-world-mill-en.js') }}"></script>
+            <!-- SlimScroll 1.3.0 -->
+            <script src="{{ asset('plugins/slimScroll/jquery.slimscroll.min.js') }}"></script>
+            <!-- ChartJS 1.0.1 -->
+            <script src="{{ asset('plugins/chartjs/Chart.min.js') }}"></script>
+                <script src="{{ asset('js/jquery.maskMoney.min.js') }}"></script>
+                <script src="{{ asset('/plugins/input-mask/jquery.inputmask.js') }}"></script>
+            <script>
+        $(function(){
+            function esconder(){
+                $(".resposta").fadeOut(1000);
+            }
+            
+            setTimeout(esconder, 4000);
+        })    
+                </script>
+</head>
+<body>
 <script>
 $(function(){
     $(".anexo").on('click', function(){
@@ -20,7 +87,9 @@ $(function(){
         margin-bottom: 20px;
     }
 </style>
-<div class="col-xs-12">
+<div class="container">
+    <div class="row">
+<div class="col-xs-12 well">
     <h3 class="page-header" id="titulo">Detalhes Manifestação</h3>
     <div class="row">
     <div class="col-xs-12">
@@ -182,45 +251,12 @@ $(function(){
               </div>
           </div>
       </div>
-        <?php if($m->MANIF_status == 1): ?>
-            <a href="#dvanexo" class="btn btn-primary anexo">Anexos</a>
-            <!--<a href="{{ route('admin::manifestacao::mensagens', 
-                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" class="btn btn-success">Mensagens</a>-->
-            <a href="#dvconcluir" class="btn btn-default concluir">Concluir</a>
-        <?php else: ?>
-            <!--<a href="{{ route('admin::manifestacao::mensagens', 
-                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" class="btn btn-success">Mensagens</a>-->
-        <?php endif; ?>
-        <div id="dvanexo" style="display: none;">
-            <form method="post" action="{{ route('admin::manifestacao::anexos', 
-                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" enctype="multipart/form-data">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    Anexo:
-                    <input type="file" name="anexo" class="form-control">
-                </div>
-                <input type="submit" value="Adicionar Anexo" class="btn btn-primary">
-            </form>
-        </div>
         
-        <div id="dvconcluir" style="display: none;">
-            <form method="post" action="{{ route('admin::manifestacao::concluir', 
-                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}">
-                <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                <div class="form-group">
-                    Parecer:
-                    <textarea name="parecer" id="parecer" class="form-control" required
-                              rows="5"></textarea>
-                </div>
-                <div class="form-group">
-                    Resposta Reclamante:
-                    <textarea name="respreclamante" id="respreclamante" class="form-control" required
-                              rows="5"></textarea>
-                </div>
-                <input type="submit" value="Concluir" class="btn btn-primary">
-            </form>
-        </div>
+        
     </div>
     </div>
 </div>
-@endsection
+</div>
+</div>
+</body>
+</html>

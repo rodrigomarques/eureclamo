@@ -25,8 +25,13 @@ class RespostaManifestacaoController extends ConfigController
                     if($user->USUARIO_status == 1){
                         //Verificar se ele pode ver esta manifestacao
                         $usuario = $usuarioPDao->buscarId($user->USUARIO_id);
-                        \Illuminate\Support\Facades\Session::put('prestador', $usuario);
-                        return redirect()->intended('manifestacao/17/5/respostaprestador.html');
+                        if($usuario == null){
+                            $data["resp"] = "<div class='alert alert-danger'>Uusário sem acesso</div>";
+                        }else{
+                            \Illuminate\Support\Facades\Session::put('prestador', $usuario);
+                            //return redirect()->intended('manifestacao/17/5/respostaprestador.html');
+                            return redirect()->intended('manifestacao/'.$ano.'/'.$idmanifestacao.'/respostaprestador.html');
+                        }
                         
                     }else{
                         $data["resp"] = "<div class='alert alert-danger'>Uusário sem acesso</div>";
@@ -48,7 +53,9 @@ class RespostaManifestacaoController extends ConfigController
         $manifestacao = new \App\Manifestacao();
         $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
         $manif = $manifDao->buscarId($idmanifestacao, $ano);
-        
+        if($manif == null){
+            return redirect()->intended('manifestacao/'.$ano.'/'.$idmanifestacao.'/prestador.html');
+        }
         $data["m"] = $manif;
         return view('admin.sistema.respostamanifestacao.respostaprestador', $data);
     }
