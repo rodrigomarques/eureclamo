@@ -9,7 +9,7 @@ $(function(){
 <div class="col-xs-12">
     <form method="post" action="{{ route('admin::empresa::produto::cadastrar')}}" class="well">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <h3 class="page-header">Produto</h3>
+    <h3 class="page-header">Cadastrar Produto</h3>
     <div class="row">
         <div class="form-group col-xs-6">
             Nome do produto *

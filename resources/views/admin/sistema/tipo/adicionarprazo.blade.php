@@ -27,7 +27,7 @@
 
 <div class="col-xs-12">
 <form method="post"  action="{{ route('admin::prazo::adicionar')}}"  class="well">
-    <h3 class="page-header">Prazo por Tipo de Manifestação</h3>
+    <h3 class="page-header">Cadastrar Prazo por Tipo de Manifestação</h3>
     <input type="hidden" name="_token" value="{{ csrf_token() }}">  
     <div class="row">
         <div class="form-group col-xs-6">

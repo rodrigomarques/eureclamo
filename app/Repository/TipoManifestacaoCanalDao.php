@@ -18,6 +18,7 @@ class TipoManifestacaoCanalDao {
     public function buscar($idtipo = 0, $idcanal = 0){
         $result = $this->model
                 ->join('canal', 'canal.CANAL_id', '=', 'tipomanifcanal.TIPO_CANAL_idCanal')
+                ->join('empresa', 'canal.EMPRESA_id', '=', 'empresa.EMPRESA_id')
                     ->join('tipomanifestacao', 'tipomanifestacao.TIPOMANIF_id', '=', 'tipomanifcanal.TIPO_CANAL_idTipo');
         
         if($idtipo != 0)

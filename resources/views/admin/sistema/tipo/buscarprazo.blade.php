@@ -27,6 +27,7 @@
 
 <div class="col-xs-12">
 <form method="post"  action="{{ route('admin::prazo::buscar')}}"  class="well">
+    <h3 class="page-header">Buscar Prazo por Tipo de Manifestação</h3>
     <input type="hidden" name="_token" value="{{ csrf_token() }}">  
     <div class="row">
         <div class="form-group col-xs-6">
@@ -76,20 +77,24 @@
         <div class="box-body">
 <table class="table table-bordered">
     <tr>
+        <th>EMPRESA</th>
         <th>CANAL</th>
-        <th>TIPO DE MANIFESTAÇÃO</th>
+        <th>TIPO</th>
         <th>PRAZO</th>
+        <th>NÚMERO DA VERSÃO</th>
 		<th>DATA INÍCIO</th>
 		<th>DATA FIM</th>
         <th></th>
     </tr>
     @foreach($listaP as $p)
     <tr>
+        <td>{{ $p->EMPRESA_nome }}</td>
         <td>{{ $p->CANAL_nome }}</td>
         <td>{{ $p->TIPOMANIF_nome }}</td>
         <td>{{ $p->TIPO_CANAL_PrazoPadrao }}</td>
-		<td>@if($p->TIPO_CANAL_dataInicioVersao  != null && $p->TIPO_CANAL_dataInicioVersao != '0000-00-00 00:00:00') {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataInicioVersao)->format("d/m/Y H:i:s")}} @endif</td>
-		<td>@if($p->TIPO_CANAL_dataFimVersao  != null) {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataFimVersao)->format("d/m/Y H:i:s")}} @endif</td>
+        <td>{{ $p->TIPO_CANAL_nrVersao }}</td>
+        <td>@if($p->TIPO_CANAL_dataInicioVersao  != null && $p->TIPO_CANAL_dataInicioVersao != '0000-00-00 00:00:00') {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataInicioVersao)->format("d/m/Y H:i:s")}} @endif</td>
+	<td>@if($p->TIPO_CANAL_dataFimVersao  != null) {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataFimVersao)->format("d/m/Y H:i:s")}} @endif</td>
         <td>
             <a href="{{ route('admin::prazo::detalhes', ['idtipo' => $p->TIPO_CANAL_idTipo, 
                         'idcanal' => $p->TIPO_CANAL_idCanal ]) }}" class="btn btn-warning">

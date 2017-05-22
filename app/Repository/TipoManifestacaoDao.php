@@ -38,6 +38,7 @@ class TipoManifestacaoDao {
         $result = $this->model
                         ->join('tipomanifcanal', 'tipomanifcanal.TIPO_CANAL_idTipo', '=', 'tipomanifestacao.TIPOMANIF_id')
                         ->Where('TIPO_CANAL_idCanal', '=', $idCanal)
+                        ->WhereNull('TIPO_CANAL_dataFimVersao')
                         ;
                         $result->orderBy("TIPOMANIF_nome");
                         
