@@ -1,0 +1,8 @@
+[2017-02-19 02:52:34] backlog.INFO: rod@ig.com| [] []
+[2017-02-19 02:53:03] backlog.INFO: 2017-02-19 02:53:03http://localhost:81/eureclamo/admin/public/admin/empresa/cadastrar.html|rod|4|rod@ig.com| [] []
+[2017-02-19 02:53:06] backlog.INFO: 2017-02-19 02:53:06http://localhost:81/eureclamo/admin/public/admin/manifestacao/cadastrar.html|rod|4|rod@ig.com| [] []
+[2017-02-19 02:53:13] backlog.INFO: 2017-02-19 02:53:13http://localhost:81/eureclamo/admin/public/admin/canais/cadastrar.html|rod|4|rod@ig.com| [] []
+[2017-02-19 02:53:17] backlog.INFO: 2017-02-19 02:53:17http://localhost:81/eureclamo/admin/public/admin/canais/cadastrar_tipo.html|_token = l9TpwR94MaYbdURNkunMWE3frn5fPBcAr3VjdKSo|tipo = Novo Tipo|rod|4|rod@ig.com| [] []
+[2017-02-19 02:54:40] backlog.INFO: 2017-02-19 02:54:40http://localhost:81/eureclamo/admin/public/admin/manifestacao/cadastrar.html|rod|4|rod@ig.com| {"ok":"teste"} []
+[2017-02-19 02:54:43] backlog.INFO: 2017-02-19 02:54:43http://localhost:81/eureclamo/admin/public/admin/prestador/servico/cadastrar.html|rod|4|rod@ig.com| {"ok":"teste"} []
+[2017-02-19 02:56:57] backlog.INFO: 2017-02-19 02:56:57http://localhost:81/eureclamo/admin/public/admin/empresa/usuario/cadastrar.html|rod|4|rod@ig.com| {"date":"19/02/2017 02:56"} []
