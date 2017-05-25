@@ -384,7 +384,10 @@ class PrestadorController extends ConfigController
                 $serv->SERVICO_status = 1;
             
             if($serv->save()){
-                $data["resp"] = "<div class='alert alert-success'>Prestador editado com sucesso!</div>";
+                if($serv->SERVICO_status == 1)
+                $data["resp"] = "<div class='alert alert-success'>Prestador ativado  com sucesso!</div>";
+                else
+                $data["resp"] = "<div class='alert alert-success'>Prestador cancelado com sucesso!</div>";
             }else{
                 $data["resp"] = "<div class='alert alert-danger'>Prestador não editado!</div>";
             }

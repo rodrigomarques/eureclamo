@@ -48,7 +48,7 @@
 				<td>
                     @if($c->CANAL_status == 1) 
                     <a href="{{ route('admin::canais::detalhescanal', [ 'id' =>  $c->CANAL_id ]) }}" class="btn btn-danger"
-                       onclick="return confirm('Deseja excluir este canal?')">
+                       onclick="return confirm('Deseja desativar este canal?')">
                         <span class="fa fa-remove"></span>
                     </a>
                     @else 

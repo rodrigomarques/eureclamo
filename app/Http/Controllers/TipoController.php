@@ -115,7 +115,10 @@ class TipoController extends ConfigController
                 $tipoM->TIPOMANIF_status = 1;
             
             if($tipoM->save()){
-                $data["resp"] = "<div class='alert alert-success'>Tipo de Manifestação editado com sucesso!</div>";
+                if($tipoM->TIPOMANIF_status == 1)
+                $data["resp"] = "<div class='alert alert-success'>Tipo de Manifestação ativado com sucesso!</div>";
+                else
+                $data["resp"] = "<div class='alert alert-success'>Tipo de Manifestação cancelado com sucesso!</div>";
             }else{
                 $data["resp"] = "<div class='alert alert-danger'>Tipo de Manifestação não editado!</div>";
             }

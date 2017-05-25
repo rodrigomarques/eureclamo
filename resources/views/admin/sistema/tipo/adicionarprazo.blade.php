@@ -55,7 +55,7 @@
     </div>
     <div class="row">
         <div class="form-group col-xs-6">
-            Prazo por Tipo de Manifestação *
+            Tipo de Manifestação *
             <select name="tipom" id="tipom" class="form-control" required>
                 <option value="">--Selecione</option>
                 @if(isset($listaManif) && count($listaManif))

@@ -70,7 +70,7 @@ $(function(){
                     <td>
                         @if($p->PRODUTO_status == 1) 
                         <a href="{{ route('admin::empresa::produto::excluir', [ 'id' =>  $p->PRODUTO_id ]) }}" class="btn btn-danger"
-                           onclick=" return confirm('Deseja excluir este produto?')">
+                           onclick=" return confirm('Deseja desativar este produto?')">
                             <span class="fa fa-remove"></span>
                         </a>
                         @else 

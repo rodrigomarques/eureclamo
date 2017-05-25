@@ -39,7 +39,7 @@
                 <td>
                     @if($m->TIPOMANIF_status == 1) 
                     <a href="{{ route('admin::tipo::excluir', [ 'id' =>  $m->TIPOMANIF_id ]) }}" class="btn btn-danger"
-                       onclick="return confirm('Deseja excluir este tipo da empresa?')">
+                       onclick="return confirm('Deseja desativar este tipo da empresa?')">
                         <span class="fa fa-remove"></span>
                     </a>
                     @else 

@@ -420,7 +420,10 @@ class EmpresaController extends ConfigController
                 $prod->PRODUTO_status = 1;
 
             if($prod->save()){
-                $data["resp"] = "<div class='alert alert-success'>Produto excluído com sucesso!</div>";
+                if($prod->PRODUTO_status == 1)
+                $data["resp"] = "<div class='alert alert-success'>Produto ativado com sucesso!</div>";
+                else
+                $data["resp"] = "<div class='alert alert-success'>Produto cancelado  com sucesso!</div>";
             }else{
                 $data["resp"] = "<div class='alert alert-danger'>Produto não editado!</div>";
             }

@@ -46,7 +46,7 @@
             <input type="number" name="prazo" required class="form-control" value="{{ $tipo->TIPO_CANAL_PrazoPadrao }}">
         </div>
     </div>
-    <input type="submit" value="Cadastrar" class="btn btn-primary">
+    <input type="submit" value="Alterar Prazo" class="btn btn-primary">
 </form>
 </div>
 

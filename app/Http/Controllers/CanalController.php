@@ -40,7 +40,10 @@ class CanalController extends ConfigController
 				else $canal->CANAL_status = 1;
 				
 				if($canal->save()){
-                    $data["resp"] = "<div class='alert alert-success'>Canal alterado com sucesso!</div>";
+                    if($canal->CANAL_status == 1)
+                    $data["resp"] = "<div class='alert alert-success'>Canal ativado com sucesso!</div>";
+                    else
+                    $data["resp"] = "<div class='alert alert-success'>Canal cancelado  com sucesso!</div>";
                     
                 }else{
                     $data["resp"] = "<div class='alert alert-danger'>Canal não alterado!</div>";

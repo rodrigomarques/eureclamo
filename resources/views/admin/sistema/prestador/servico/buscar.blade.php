@@ -76,7 +76,7 @@
                     <td>
                     @if($s->SERVICO_status == 1) 
                     <a href="{{ route('admin::prestador::servico::alterar', [ 'id' =>  $s->SERVICO_id ]) }}" class="btn btn-danger"
-                       onclick="return confirm('Deseja excluir este serviço?')">
+                       onclick="return confirm('Deseja desativar este serviço?')">
                         <span class="fa fa-remove"></span>
                     </a>
                     @else 
