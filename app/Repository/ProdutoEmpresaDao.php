@@ -47,7 +47,7 @@ class ProdutoEmpresaDao {
             $result->orderBy("PRODUTO_nome");
                         
         return $result->select('PRODUTO_nome', 'PRODUTO_descricao', 'PRODUTO_id', 'PRODUTO_grupo', 
-                'PRODUTO_status')
+                'PRODUTO_status', 'PRODUTO_dataCadastro', 'PRODUTO_dataCancel')
                 ->distinct()->get();
     }
     

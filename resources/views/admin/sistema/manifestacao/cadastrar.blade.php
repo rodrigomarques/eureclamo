@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="{{ asset('plugins/datepicker/datepicker3.css') }}">
 <script src="{{ asset('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
 <script src="{{ asset('plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js')}}"></script>
+<script src="{{ asset('js/validar.js')}}"></script>
 <script type="text/javascript">
     $(function(){
         function localidadeM(){
@@ -184,24 +185,39 @@
 		$("#formcadastro").on('submit', function(){
 			var idlocalidade = $("#idlocalidade").val();
 			var dtentradacanal = $("#dtentradacanal").val();
-			var hrentradacanal = $("#hrentradacanal").val();
+			var dtquebraCanal = dtentradacanal.split('/');
+                        var dtNCanal = new Date(dtquebraCanal[2], dtquebraCanal[1] - 1, dtquebraCanal[0]);
+                        
+                        var hrentradacanal = $("#hrentradacanal").val();
 			var prazoresposta = $("#prazoresposta").val();
 			var tipomanif = $("#tipomanif").val();
 			
 			var dtentradagestao = $("#dtentradagestao").val();
 			var hrentradagestao = $("#hrentradagestao").val();
+                        
+                        var dtentradaocorrencia = $("#dtentradaocorrencia").val();
+                        var dtquebraOco = dtentradaocorrencia.split('/');
+                        var dtNOcorrencia = new Date(dtquebraOco[2], dtquebraOco[1] - 1, dtquebraOco[0]);
+                        
+                        var dtAtual = new Date();
+                        var dtquebra = dtentradaocorrencia.split('/');
+                        var dtN = new Date(dtquebra[2], dtquebra[1] - 1, dtquebra[0]);
 
 			//console.log(idlocalidade);
 			if(idlocalidade == undefined || idlocalidade == 0){
 				alert("Escolha uma localidade");
-			}else if(dtentradacanal == "" || hrentradacanal == ""){
+			}else if(dtentradacanal == "" || !checkData(dtentradacanal) || hrentradacanal == ""){
 				alert("Preencha o campo data e hora de entrada no canal");
-			}else if(dtentradagestao == "" || hrentradagestao == ""){
+			}else if(dtentradagestao == "" || !checkData(dtentradagestao) || hrentradagestao == ""){
 				alert("Preencha o campo data e hora de entrada no canal");
 			}else if(prazoresposta == ""){
 				alert("Preencha o prazo para a resposta da manifestação");
 			}else if(tipomanif == undefined || tipomanif == 0){
 				alert("Escolha um tipo para a manifestação");
+                        }else if(dtentradaocorrencia == "" || !checkData(dtentradaocorrencia) || dtAtual < dtN){
+				alert("Preencha o campo data e hora da ocorrência corretamente");
+                        }else if(dtNOcorrencia > dtNCanal){
+				alert("Preencha o campo data e hora da ocorrência corretamente");
 			}else{
 				return true;
 			}

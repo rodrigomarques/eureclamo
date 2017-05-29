@@ -319,6 +319,7 @@ class EmpresaController extends ConfigController
     }
     
     public function cadastrarproduto(Request $request){
+        date_default_timezone_set('America/Sao_Paulo');
         $data = array();
         $dbempresa = new \App\Empresa();
         $produto = new \App\Produto($this->dbname);
@@ -337,6 +338,7 @@ class EmpresaController extends ConfigController
                     $produto->PRODUTO_grupo = $grupo;
                     $produto->PRODUTO_descricao = $descricao;
                     $produto->PRODUTO_status = 1;
+                    $produto->PRODUTO_dataCadastro = date('Y-m-d H:i:s');
                     $dbname = $this->dbname;
                     
                     \DB::connection($this->dbname)
@@ -405,6 +407,7 @@ class EmpresaController extends ConfigController
     }
     
     public function excluirproduto($id){
+        date_default_timezone_set('America/Sao_Paulo');
         $data = array();
         try{
             $prod = \App\Produto::find($id);
@@ -418,7 +421,9 @@ class EmpresaController extends ConfigController
                 $prod->PRODUTO_status = 0;
             else
                 $prod->PRODUTO_status = 1;
-
+            
+            $prod->PRODUTO_dataCancel = date('Y-m-d H:i:s');
+            
             if($prod->save()){
                 if($prod->PRODUTO_status == 1)
                 $data["resp"] = "<div class='alert alert-success'>Produto ativado com sucesso!</div>";

@@ -15,7 +15,7 @@ class TipoController extends ConfigController
                 $tipo = $tipoMani->whereTipomanif_nome($request->input("tipo"))->first();
                 if($tipo == null){
                     $tipodesc = $request->input("tipo");
-
+                    
                     $nvtipo = new \App\TipoManifestacao($this->dbname);
                     $nvtipo->TIPOMANIF_nome = $tipodesc;
                     $nvtipo->TIPOMANIF_status = 1;
@@ -132,6 +132,7 @@ class TipoController extends ConfigController
     }
     
     public function adicionarprazo(Request $request){
+        date_default_timezone_set('America/Sao_Paulo');
         $data = array();
         $canal = new \App\Canal($this->dbname);
         $listaC = $canal->get();
@@ -227,6 +228,7 @@ class TipoController extends ConfigController
     }
     
     public function detalhesprazo($idtipo, $idcanal, Request $request){
+        date_default_timezone_set('America/Sao_Paulo');
         $data = array();
         $tipoManifDao = new \App\Repository\TipoManifestacaoCanalDao(new \App\TipoManifestacaoCanal);
         $tipoManif = $tipoManifDao->buscar($idtipo, $idcanal)->first();

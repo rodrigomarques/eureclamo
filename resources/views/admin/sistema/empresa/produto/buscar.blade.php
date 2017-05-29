@@ -49,6 +49,9 @@ $(function(){
                     <th>GRUPO</th>
                     <th>NOME PRODUTO</th>
                     <th>DESCRIÇÃO</th>
+                    <th>STATUS</th>
+                    <th>DATA CADASTRO</th>
+                    <th>DATA CANCELAMENTO</th>
                     <th></th>
                 </tr>
                 @foreach($listaP as $p)
@@ -67,17 +70,15 @@ $(function(){
                     <td>{{ $p->PRODUTO_grupo }}</td>
                     <td>{{ $p->PRODUTO_nome }}</td>
                     <td>{{ $p->PRODUTO_descricao }}</td>
+                    <td>@if($p->PRODUTO_status == 1) Ativo @else Cancelado @endif</td>
+                    <td>@if($p->PRODUTO_dataCadastro  != null) {{ @\Carbon\Carbon::parse($p->PRODUTO_dataCadastro)->format("d/m/Y H:i:s")}} @endif</td>
+                    <td>@if($p->PRODUTO_dataCancel  != null) {{ @\Carbon\Carbon::parse($p->PRODUTO_dataCancel)->format("d/m/Y H:i:s")}} @endif</td>
                     <td>
                         @if($p->PRODUTO_status == 1) 
                         <a href="{{ route('admin::empresa::produto::excluir', [ 'id' =>  $p->PRODUTO_id ]) }}" class="btn btn-danger"
                            onclick=" return confirm('Deseja desativar este produto?')">
                             <span class="fa fa-remove"></span>
                         </a>
-                        @else 
-                            <a href="{{ route('admin::empresa::produto::excluir', [ 'id' =>  $p->PRODUTO_id ]) }}" class="btn btn-success"
-                               >
-                                <span class="fa fa-check-square-o"></span>
-                            </a>
                         @endif
                     </td>
                 </tr>
