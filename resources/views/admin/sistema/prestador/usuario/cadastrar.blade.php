@@ -55,7 +55,12 @@
                 <option value="">---Selecione</option>
                 @if(isset($listaP) && count($listaP) > 0)
                     @foreach($listaP as $p)
+                        @if(
+                        $p->PERFIL_nome == "directorout" || 
+                        $p->PERFIL_nome == "managerout" || 
+                        $p->PERFIL_nome == "userout" )
                         <option value="{{ $p->PERFIL_id }}">{{ $p->PERFIL_nome }}</option>
+                        @endif
                     @endforeach
                 @endif
             </select>

@@ -15,12 +15,15 @@ class ProdutoEmpresaDao {
         $this->model = $pe;
     }
     
-    public function buscarId($idEmpresa = ""){
+    public function buscarId($idEmpresa = "", $status = 1){
         $result = $this->model
                 ->join('produto', 'produto.PRODUTO_id', '=', 'produtoempresa.PRODUTO_EMP_idProduto')
                         ;
         if($idEmpresa != "")
             $result->Where("PRODUTO_EMP_idEmpresa", "=", $idEmpresa);
+        
+        if($status != "")
+            $result->Where("PRODUTO_status", "=", $status);
                         
             $result->orderBy("PRODUTO_nome");
                         

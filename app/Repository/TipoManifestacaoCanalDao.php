@@ -52,10 +52,22 @@ class TipoManifestacaoCanalDao {
         $result = $this->model
                         ->Where('TIPO_CANAL_idTipo', '=', $idtipo)
                         ->Where('TIPO_CANAL_idCanal', '=', $idcanal)
+                
                         ;
                         
                         
         return $result->select('*')->get();
+    }
+    
+    public function buscarIdTIpoIdCanalUltimo($idtipo, $idcanal){
+        $result = $this->model
+                        ->Where('TIPO_CANAL_idTipo', '=', $idtipo)
+                        ->Where('TIPO_CANAL_idCanal', '=', $idcanal)
+                        ;
+                        
+       $result->WhereNull('TIPO_CANAL_dataFimVersao');        
+       $result->orderBy('TIPO_CANAL_dataInicioVersao', 'desc');
+        return $result->select('*')->first();
     }
     
 }

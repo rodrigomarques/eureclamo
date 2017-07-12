@@ -22,6 +22,8 @@ class ManifestacaoDao {
                 ->leftJoin('tipomanifestacao', 'manifestacao.MANIF_TIPO_CANAL_idTipo', '=', 'tipomanifestacao.TIPOMANIF_id')
                 ->leftJoin('produto', 'produto.PRODUTO_id', '=', 'manifestacao.MANIF_PRODUTO_idProduto')
                 ->leftJoin('localidade', 'localidade.LOCALIDADE_id', '=', 'manifestacao.MANIF_LOCALIDADE_id')
+                ->leftJoin('empresa', 'empresa.EMPRESA_id', '=', 'manifestacao.MANIF_EMPRESA_idEmpresa')
+                ->leftJoin('reclamante', 'reclamante.RECLAMANTE_id', '=', 'manifestacao.MANIF_RECLAMANTE_idReclamante')
                         ;
         
         if($idcanal != ""){
@@ -50,7 +52,7 @@ class ManifestacaoDao {
         
                         
             $result->orderBy("MANIF_dataHora_Cadastro", "desc");
-                        
+            $result->limit(50)            ;
         return $result->select('*')
                 ->distinct()->get();
     }

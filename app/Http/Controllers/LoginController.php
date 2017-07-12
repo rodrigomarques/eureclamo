@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
@@ -39,8 +38,8 @@ class LoginController extends Controller
             
             $user = new \App\Usuario;
             $user->USUARIO_login = $usuario; $user->password = Hash::make($senha);;
-            
             if(Auth::attempt($credential)){
+                //Adicionar a questao do STATUS para liberar acesso
                 return redirect()->intended('admin');
             }else{
                 $resp = '<div class="alert alert-info">Usuário inválido</div>';

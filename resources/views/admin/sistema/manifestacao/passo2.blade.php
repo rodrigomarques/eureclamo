@@ -1,81 +1,227 @@
 @extends('admin.layout')
 
 @section('conteudo')
-<link rel="stylesheet" href="{{ asset('dist/css/AdminLTE.min.css') }}">
-<link rel="stylesheet" href="{{ asset('plugins/datepicker/datepicker3.css') }}">
-<script src="{{ asset('plugins/datepicker/bootstrap-datepicker.js')}}"></script>
-<script src="{{ asset('plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js')}}"></script>
-<script type="text/javascript">
-    $(function(){
-        $('#servicos').on('change', function(){
-            console.log("Teste");
-            var servicos = $(this).val();
-            $.get(
-            '{{ route("admin::manifestacao::buscarprestador") }}',
-            {
-                idservico : servicos
-            },
-            function(result){
-                ///////////AQUIIIIIIIIIIIIIIIIIIIIII
-                console.log(result);
-                $('.dvprestador').html(result);
-            }
-        );
-        });
-    })
-</script>
-<div class="col-xs-12">
-    <h3 class="page-header">Cadastrar Manifestação - Notificar Prestadores</h3>
-    <form method="post" action="{{ route('admin::manifestacao::passo2', ['id' => $idmanifestacao, 'ano' => $ano])}}" class="well">
-    <input type="hidden" name="_token" value="{{ csrf_token() }}">
-    <div class="row">
-        <div class="form-group col-xs-6" >
-            Serviços:
-            <select name="servicos" id="servicos" required class="form-control">
-                <option value=""></option>
-                @if(count($listaServ) > 0)
-                    @foreach($listaServ as $s)
-                    <option value="{{ $s->SERVICO_id}}">{{ $s->SERVICO_nome }}</option>
-                    @endforeach
-                @endif
-            </select>
-        </div>
-        <div class="form-group col-xs-6 dvprestador" >
-            Prestador:
-            <select name="prestador" id="prestador" required class="form-control">
-                <option value=""></option>
-            </select>
-        </div>
-    </div>
-    <div class="row">
-        <div class="form-group col-xs-12">
-            Mensagem de Início:
-            <textarea name="msginicio" rows="4" class="form-control"></textarea>
-        </div>
-    </div>
+<script>
+$(function(){
+    $(".anexo").on('click', function(){
+        $("#dvanexo").show();
+        $("#dvconcluir").hide();
+    });
     
-    <input type="submit" value="Adicionar Outro" class="btn btn-primary">
-    <a href="#" class="btn btn-primary">Finalizar</a>
-</form>
-</div>
-@if(isset($listaMsg) && count($listaMsg))
+    $(".concluir").on('click', function(){
+        $("#dvconcluir").show();
+        $("#dvanexo").hide();
+    });
+    
+})    
+</script>
+<style>
+    .linha{
+        margin-bottom: 20px;
+    }
+</style>
 <div class="col-xs-12">
-   <table class="table table-bordered">
-       <tr>
-           <th>PRESTADOR</th>
-           <th>SERVIÇO</th>
-           <th>DATA</th>
-           <th>MENSAGEM</th>
-       </tr>
-    @foreach($listaMsg as $m)
-    <tr>
-        <td>{{ $m->PRESTADOR_nome}}</td>
-        <td>{{ $m->PRESTADOR_nome}}</td>
-        <td>{{ $m->MSG_USUARIO_dataHoraMsg}}</td>
-        <td>{{ $m->MSG_USUARIO_mensagem }}</td>
-    </tr>
-    @endforeach
-   </table>
+    <h3 class="page-header" id="titulo">Detalhes Manifestação</h3>
+    <div class="row">
+    <div class="col-xs-12">
+        
+        
+        <?php if($m->MANIF_status == 1): ?>
+            <a href="#dvanexo" class="btn btn-primary anexo">Anexar Arquivos</a>
+            <!--<a href="{{ route('admin::manifestacao::mensagens', 
+                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" class="btn btn-success">Mensagens</a>-->
+            <a href="{{ route('admin::manifestacao::passo3', 
+                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" 
+               class="btn btn-default">Notificar Prestadores</a>
+        <?php else: ?>
+            <!--<a href="{{ route('admin::manifestacao::mensagens', 
+                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" class="btn btn-success">Mensagens</a>-->
+        <?php endif; ?>
+        <div id="dvanexo" style="display: none;">
+            <form method="post" action="{{ route('admin::manifestacao::anexos', 
+                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" enctype="multipart/form-data">
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                <div class="form-group">
+                    Anexo:
+                    <input type="file" name="anexo" class="form-control">
+                </div>
+                <input type="submit" value="Adicionar Anexo" class="btn btn-primary">
+            </form>
+        </div>
+        
+        
+      <div class="box box-primary">
+          <div class="box-body">
+              <div class="row">
+              <div class="col-xs-4 linha">
+                <b>Código da manifestação: <br></b>
+                {{ $m->MANIF_id }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Nível: <br></b>
+                {{ $m->MANIF_nivel }}
+              </div>
+              <div class="col-xs-4 linha">
+                  <b>Canal: <br></b>
+                {{ $m->CANAL_nome }}
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-4 linha">
+                <b>Nome Reclamante: <br></b>
+                {{ $m->RECLAMANTE_nome }}
+              </div>
+                  <div class="col-xs-4 linha">
+                <b>E-mail: <br></b>
+                {{ $m->RECLAMANTE_email }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Celular: <br></b>
+                {{ $m->RECLAMANTE_celular }}
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-4 linha">
+                  <b>Telefone: <br></b>
+                {{ $m->RECLAMANTE_telefone }}
+              </div>
+              <div class="col-xs-4 linha">
+                  <b>Código do reclamante: <br></b>
+                  {{ $m->MANIF_codReclamanteEmp }}
+                   
+              </div>
+              <div class="col-xs-4 linha">
+                  <b>Número do protocolo: <br></b>
+                  {{ $m->MANIF_nrProtocoloCanal }}
+                    
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-4 linha">
+                <b>Empresa: <br></b>
+                {{ $m->EMPRESA_nomeCompleto }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Produto: <br></b>
+                {{ $m->PRODUTO_nome }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Tipo: <br></b>
+                {{ $m->TIPOMANIF_nome }}
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-12 linha">
+                <b>Resumo: <br></b>
+                {{ $m->MANIF_resumo }}
+              </div>
+          </div>
+          <div class="row">
+              <div class="col-xs-3 linha">
+                <b>Entrada no canal: <br></b>
+                {{ $m->MANIF_dataHora_EntCanal }}
+              </div>
+              <div class="col-xs-3 linha">
+                <b>Data da ocorrência: <br></b>
+                {{ $m->MANIF_dataHora_Ocorrencia }}
+              </div>
+              <div class="col-xs-3 linha">
+                <b>Entrada na gestão: <br></b>
+                {{ $m->MANIF_dataHora_EntGestao }}
+              </div>
+              <div class="col-xs-3 linha">
+                <b>Prazo de Resposta: <br></b>
+                {{ $m->MANIF_prazoResposta }}
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-4 linha">
+                <b>Endereço: <br></b>
+                {{ $m->MANIF_endereco }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Referência: <br></b>
+                {{ $m->MANIF_referencia }}
+              </div>
+              <div class="col-xs-4 linha">
+                <b>Localidade: <br></b>
+                {{ $m->LOCALIDADE_nome }}
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-12 linha">
+                    <b>Completa: <br></b>
+                    {{ $m->MANIF_completa }}
+              </div>
+                  
+              </div>
+              
+              <?php
+              $msgUsuarioDao = new App\Repository\MensagemUsuarioDao(new App\MensagemUsuario);
+              $msgUsuario = $msgUsuarioDao->buscarPorManifestacao($m->MANIF_id, $m->MANIF_ano);
+              ?>
+              @if(count($msgUsuario) > 0)
+                  
+                     @foreach($msgUsuario as $mm)
+                     <div class="row">
+              <div class="col-xs-12 linha">
+                    <table class="table table-bordered">
+                        <tr>
+                            <th>PRESTADOR</th>
+                            <th>SERVIÇO</th>
+                            <th>DATA</th>
+                            <th>MENSAGEM</th>
+                        </tr>
+                     <tr>
+                         <td>{{ $mm->PRESTADOR_nome}}</td>
+                         <td>{{ $mm->PRESTADOR_nome}}</td>
+                         <td>{{ $mm->MSG_USUARIO_dataHoraMsg}}</td>
+                         <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
+                     </tr>
+                     </table>
+                 </div>
+                 </div>
+                     @endforeach
+                    
+              @endif
+              
+              <?php if($m->MANIF_status != 1): ?>
+                <div class="row">
+                  <div class="col-xs-12 linha">
+                      <div class="alert alert-info">
+                          MANIFESTAÇÃO CONCLUIDA
+                      </div>
+                  </div>
+                  </div>
+                <?php endif;     ?>
+              <div class="row">
+                  <div class="col-xs-12 linha">
+                      <?php
+                      $anexo = \App\AnexoManifestacao::whereManif_idAndManif_ano($m->MANIF_id, $m->MANIF_ano)->get();
+                      if(isset($anexo) && count($anexo) > 0):
+                          foreach($anexo as $an):
+                          if($an->ANEXO_MANIF_tipoArq == "jpg" || $an->ANEXO_MANIF_tipoArq == "jpeg" ||
+                                  $an->ANEXO_MANIF_tipoArq == "png"){
+                                    echo "<div class='col-xs-4'>";
+                                    echo "<img src='data:image/" . $an->ANEXO_MANIF_tipoArq . ";base64," . $an->ANEXO_MANIF_arquivo."' class='img-responsive' style='height:100px !important;'>";
+                                    echo "</div>";
+                                  }else{
+                                      echo "<div class='col-xs-4'>";
+                                      ?><a href="{{ asset("anexos/" . $an->ANEXO_MANIF_nomeArq) }}" class="btn btn-default" target="_blank">
+                                          Download
+                                      </a>
+                                          <?php
+                                    echo "</div>";
+                                  }
+                          endforeach;
+                      endif;
+                      ?>
+                  </div>
+              </div>
+          </div>
+      </div>
+        
+    </div>
+    </div>
 </div>
-@endif;
 @endsection

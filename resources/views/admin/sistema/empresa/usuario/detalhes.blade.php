@@ -58,7 +58,13 @@
                 <option value="">---Selecione</option>
                 @if(isset($listaP) && count($listaP) > 0)
                     @foreach($listaP as $p)
+                        @if(
+                        $p->PERFIL_nome == "admin" || 
+                        $p->PERFIL_nome == "directorin" || 
+                        $p->PERFIL_nome == "managerin" || 
+                        $p->PERFIL_nome == "userin" )
                         <option  @if($usuario->USUARIO_PERFIL_id == $p->PERFIL_id)selected @endif value="{{ $p->PERFIL_id }}">{{ $p->PERFIL_nome }}</option>
+                        @endif
                     @endforeach
                 @endif
             </select>

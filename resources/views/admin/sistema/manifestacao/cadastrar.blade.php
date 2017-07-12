@@ -8,6 +8,52 @@
 <script src="{{ asset('js/validar.js')}}"></script>
 <script type="text/javascript">
     $(function(){
+        $(".btn").on('click', function(){
+                    var idlocalidade = $("#idlocalidade").val();
+                    var dtentradacanal = $("#dtentradacanal").val();
+                    var dtquebraCanal = dtentradacanal.split('/');
+                    var dtNCanal = new Date(dtquebraCanal[2], dtquebraCanal[1] - 1, dtquebraCanal[0]);
+
+                    var hrentradacanal = $("#hrentradacanal").val();
+                    var prazoresposta = $("#prazoresposta").val();
+                    var tipomanif = $("#tipomanif").val();
+
+                    var dtentradagestao = $("#dtentradagestao").val();
+                    var hrentradagestao = $("#hrentradagestao").val();
+
+                    var dtquebraEntrada = dtentradagestao.split('/');
+                    var dtNEntrada = new Date(dtquebraEntrada[2], dtquebraEntrada[1] - 1, dtquebraEntrada[0]);
+
+                    var dtentradaocorrencia = $("#dtentradaocorrencia").val();
+                    var dtquebraOco = dtentradaocorrencia.split('/');
+                    var dtNOcorrencia = new Date(dtquebraOco[2], dtquebraOco[1] - 1, dtquebraOco[0]);
+
+                    var dtAtual = new Date();
+                    var dtquebra = dtentradaocorrencia.split('/');
+                    var dtN = new Date(dtquebra[2], dtquebra[1] - 1, dtquebra[0]);
+
+                    //console.log(idlocalidade);
+                    if(idlocalidade == undefined || idlocalidade == 0){
+                            alert("Escolha uma localidade");
+                    }else if(dtentradacanal == "" || !checkData(dtentradacanal) || hrentradacanal == ""){
+                            alert("Preencha o campo data e hora de entrada no canal");
+                    }else if(dtentradagestao == "" || !checkData(dtentradagestao) || hrentradagestao == ""){
+                            alert("Preencha o campo data e hora de entrada no canal");
+                    }else if(prazoresposta == ""){
+                            alert("Preencha o prazo para a resposta da manifestação");
+                    }else if(tipomanif == undefined || tipomanif == 0){
+                            alert("Escolha um tipo para a manifestação");
+                    }else if(dtentradaocorrencia == "" || !checkData(dtentradaocorrencia) || dtAtual < dtN){
+                            alert("Preencha o campo data e hora da ocorrência corretamente");
+                    }else if(dtNOcorrencia > dtNCanal){
+                            alert("Preencha o campo data e hora da ocorrência corretamente");
+                    }else if(dtNOcorrencia > dtNEntrada){
+                        alert("Preencha o campo data e hora da ocorrência corretamente");
+                    }else{
+                            return true;
+                    }
+			return false;
+		});
         function localidadeM(){
             $('#ufs').on('change', function(){
                     var ufs = $(this).val();
@@ -182,51 +228,11 @@
             );
         });
 		
-		$("#formcadastro").on('submit', function(){
-			var idlocalidade = $("#idlocalidade").val();
-			var dtentradacanal = $("#dtentradacanal").val();
-			var dtquebraCanal = dtentradacanal.split('/');
-                        var dtNCanal = new Date(dtquebraCanal[2], dtquebraCanal[1] - 1, dtquebraCanal[0]);
-                        
-                        var hrentradacanal = $("#hrentradacanal").val();
-			var prazoresposta = $("#prazoresposta").val();
-			var tipomanif = $("#tipomanif").val();
-			
-			var dtentradagestao = $("#dtentradagestao").val();
-			var hrentradagestao = $("#hrentradagestao").val();
-                        
-                        var dtentradaocorrencia = $("#dtentradaocorrencia").val();
-                        var dtquebraOco = dtentradaocorrencia.split('/');
-                        var dtNOcorrencia = new Date(dtquebraOco[2], dtquebraOco[1] - 1, dtquebraOco[0]);
-                        
-                        var dtAtual = new Date();
-                        var dtquebra = dtentradaocorrencia.split('/');
-                        var dtN = new Date(dtquebra[2], dtquebra[1] - 1, dtquebra[0]);
-
-			//console.log(idlocalidade);
-			if(idlocalidade == undefined || idlocalidade == 0){
-				alert("Escolha uma localidade");
-			}else if(dtentradacanal == "" || !checkData(dtentradacanal) || hrentradacanal == ""){
-				alert("Preencha o campo data e hora de entrada no canal");
-			}else if(dtentradagestao == "" || !checkData(dtentradagestao) || hrentradagestao == ""){
-				alert("Preencha o campo data e hora de entrada no canal");
-			}else if(prazoresposta == ""){
-				alert("Preencha o prazo para a resposta da manifestação");
-			}else if(tipomanif == undefined || tipomanif == 0){
-				alert("Escolha um tipo para a manifestação");
-                        }else if(dtentradaocorrencia == "" || !checkData(dtentradaocorrencia) || dtAtual < dtN){
-				alert("Preencha o campo data e hora da ocorrência corretamente");
-                        }else if(dtNOcorrencia > dtNCanal){
-				alert("Preencha o campo data e hora da ocorrência corretamente");
-			}else{
-				return true;
-			}
-			return false;
-		});
+		
     })
 </script>
 <div class="col-xs-12">
-    <h3 class="page-header">Cadastrar Manifestação</h3>
+    <h3 class="page-header">Criar Manifestação</h3>
     <form method="post" action="{{ route('admin::manifestacao::cadastrar')}}" class="well" id="formcadastro">
     <input type="hidden" name="_token" value="{{ csrf_token() }}">
     <div class="row">
@@ -305,7 +311,12 @@
             </select>
             </div>
         </div>
-        
+    </div>
+    <div class="row">
+        <div class="form-group col-xs-6">
+            Protocolo do Canal:
+            <input type="text" name="nprotocolocanal" class="form-control" required>
+        </div>
     </div>
     <div class="row">
         <div class="form-group col-xs-12">
@@ -322,7 +333,7 @@
     <div class="row">
         <div class="form-group col-xs-3">
             Data Entrada Canal:
-            <input type="text" name="dtentradacanal" class="form-control datepicker" required>
+            <input type="text" name="dtentradacanal" id="dtentradacanal" class="form-control datepicker" required>
         </div>
         <div class="form-group col-xs-3">
             Hora Entrada no Canal:
@@ -330,7 +341,7 @@
         </div>
         <div class="form-group col-xs-3">
             Data Ocorrência:
-            <input type="text" name="dtentradaocorrencia" class="form-control datepicker">
+            <input type="text" name="dtentradaocorrencia" id="dtentradaocorrencia" class="form-control datepicker">
         </div>
         <div class="form-group col-xs-3">
             Hora Ocorrência
@@ -340,11 +351,11 @@
     <div class="row">
         <div class="form-group col-xs-3">
             Data Entrada Gestão:
-            <input type="text" name="dtentradagestao" class="form-control datepicker" required>
+            <input type="text" name="dtentradagestao" id="dtentradagestao" class="form-control datepicker" required>
         </div>
         <div class="form-group col-xs-3">
             Hora Entrada na Gestão:
-            <input type="text" name="hrentradagestao" class="form-control horamask" required>
+            <input type="text" name="hrentradagestao" id="hrentradagestao" class="form-control horamask" required>
         </div>
         <div class="form-group col-xs-3">
             Prazo de resposta:
@@ -359,6 +370,8 @@
             </select>
         </div>
     </div>
+    <fieldset>
+        <legend>Localidade da Ocorrência</legend>
     <div class="row">
         <div class="form-group col-xs-12">
             Endereço:
@@ -401,7 +414,8 @@
             </div>
         </div>
     </div>
-    <input type="submit" value="Cadastrar Manifestação" class="btn btn-primary">
+    </fieldset>
+    <input type="submit" value="Cadastrar Manifestação" class="btn btncad btn-primary">
 </form>
 </div>
 @endsection

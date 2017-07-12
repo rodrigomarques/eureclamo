@@ -82,6 +82,7 @@
 </div>
 @if(isset($listaManif) && count($listaManif) > 0)
 <div class="col-xs-12">
+    {{ $horario or '' }}
     <div class="box">
         <div class="box-header with-border">
             <h4 class="box-title">Lista de Manifestações</h4>
@@ -89,22 +90,44 @@
         <div class="box-body">
             <table class="table table-condensed">
                 <tr>
-                    <th>CANAL</th>
-                    <th>TIPO</th>
-                    <th>PRODUTO</th>
-                    <th>CÓDIGO</th>
-                    <th>ENTRADA</th>
-                    <th>RESUMO</th>
+                    <th>EXPIRA EM</th>
+                    <th>EMPRESA</th>
+                    <th>NR. RECLAMAÇÃO</th>
+                    <th>CLIENTE</th>
+                    <th>NR. CLIENTE</th>
                     <th>DETALHES</th>
                 </tr>
                 @foreach($listaManif as $m)
                 <tr>
-                    <td>{{ $m->CANAL_nome }}</td>
-                    <td>{{ $m->TIPOMANIF_nome }}</td>
-                    <td>{{ $m->PRODUTO_nome }}</td>
-                    <td>{{ $m->MANIF_id }}</td>
-                    <td>{{ $m->MANIF_dataHora_Cadastro }}</td>
-                    <td>{{ $m->MANIF_resumo }}</td>
+                    <td>
+                        <?php
+                        $dtAtual = \Carbon\Carbon::now('America/Sao_Paulo');
+                        $entradaCanal= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->addHours($m->MANIF_prazoResposta);
+                        $segundos = $dtAtual->diffInSeconds($entradaCanal); // 3
+                        
+                        $dias = floor($segundos / (60 * 60 * 24));
+                        $dias_mod = $segundos % (60 * 60 * 24);
+                        
+                        $horas = floor($dias_mod / (60 * 60));
+                        $horas_mod = $dias_mod % (60 * 60);
+                        
+                        $minutos = floor($horas_mod / 60);
+                        $segundos_f = $horas_mod % 60;
+                        
+                        if($dtAtual > $entradaCanal){
+                            $dtformat = "-" . $dias . " " . $horas . ":".$minutos.":".$segundos_f;
+                        }else{
+                            $dtformat = $dias . " " . $horas . ":".$minutos.":".$segundos_f;
+                        }
+                        
+                        echo $dtformat;
+                        ?>
+                        </td>
+                    
+                    <td>{{ $m->EMPRESA_nome }}</td>
+                    <td>{{ $m->MANIF_ano }}{{ $m->MANIF_id}}</td>
+                    <td>{{ $m->RECLAMANTE_nome }}</td>
+                    <td>{{ $m->MANIF_codReclamanteEmp }}</td>
                     <td>
                         <a href="{{ route('admin::manifestacao::detalhes', ['ano' => $m->MANIF_ano, 'id' => $m->MANIF_id ])}}" class="btn btn-info">
                             <span class="fa fa-edit"></span>

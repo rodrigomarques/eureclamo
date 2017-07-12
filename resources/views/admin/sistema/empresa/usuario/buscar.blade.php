@@ -47,6 +47,7 @@
                     <th>PERFIL</th>
                     <th>EMPRESA</th>
                     <th></th>
+                    <th></th>
                 </tr>
                 @foreach($listaP as $ue)
                 <tr>
@@ -56,6 +57,14 @@
                     <td>{{ $ue->USUARIO_nivel }}</td>
                     <td>{{ $ue->PERFIL_nome }}</td>
                     <td>{{ $ue->EMPRESA_nome }}</td>
+                    <td>
+                        @if($ue->USUARIO_status == 1) 
+                        <a href="{{ route('admin::empresa::usuario::excluir', [ 'id' =>  $ue->USUARIO_id ]) }}" class="btn btn-danger"
+                           onclick=" return confirm('Deseja desativar este usuario?')">
+                            <span class="fa fa-remove"></span>
+                        </a>
+                        @endif
+                    </td>
                     <td>
                         <a href="{{ route('admin::empresa::usuario::detalhes', [ 'id' =>  $ue->USUARIO_id ]) }}" class="btn btn-warning">
                                 <span class="fa fa-edit"></span>

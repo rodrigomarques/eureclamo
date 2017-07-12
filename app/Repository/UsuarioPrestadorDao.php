@@ -15,7 +15,7 @@ class UsuarioPrestadorDao {
         $this->model = $up;
     }
     
-    public function buscar($nome = "", $login = "", $email = ""){
+    public function buscar($nome = "", $login = "", $email = "", $status = 1){
         $result = $this->model
                 ->join('usuario', 'usuario.USUARIO_id', '=', 'usuarioprestador.USUARIO_PREST_idUsuario')
                 ->join('prestador', 'prestador.PRESTADOR_id', '=', 'usuarioprestador.USUARIO_PREST_idPrestador')
@@ -29,7 +29,10 @@ class UsuarioPrestadorDao {
         
         if($email != "")
             $result->Where('USUARIO_email', 'like',"%". $email . "%");
-                        
+        
+        if($status != "")
+            $result->Where('USUARIO_status', '=', $status);
+        
             $result->orderBy("USUARIO_nome");
                         //echo $result->toSql();
         return $result->select('*')

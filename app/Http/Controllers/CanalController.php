@@ -290,7 +290,7 @@ class CanalController extends ConfigController
         $id = $request->input("idempresa");
         
         $canalD = new \App\Canal($this->dbname);
-        $canal = $canalD->whereEmpresa_id($id)->get();
+        $canal = $canalD->whereEmpresa_idAndCanal_status($id, 1)->get();
         
         /*
          * errooooooss

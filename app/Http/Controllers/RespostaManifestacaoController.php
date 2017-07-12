@@ -50,6 +50,10 @@ class RespostaManifestacaoController extends ConfigController
     
     public function respostaprestador($ano, $idmanifestacao, Request $request){
         $data = array();
+        
+        $prest = \Illuminate\Support\Facades\Session::get('prestador');
+        $idusuario = ($prest->USUARIO_id);
+        
         $manifestacao = new \App\Manifestacao();
         $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
         $manif = $manifDao->buscarId($idmanifestacao, $ano);

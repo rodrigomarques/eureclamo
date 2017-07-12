@@ -96,10 +96,12 @@
         <td>@if($p->TIPO_CANAL_dataInicioVersao  != null && $p->TIPO_CANAL_dataInicioVersao != '0000-00-00 00:00:00') {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataInicioVersao)->format("d/m/Y H:i:s")}} @endif</td>
 	<td>@if($p->TIPO_CANAL_dataFimVersao  != null) {{ @\Carbon\Carbon::parse($p->TIPO_CANAL_dataFimVersao)->format("d/m/Y H:i:s")}} @endif</td>
         <td>
+            @if($p->TIPO_CANAL_dataFimVersao  == null || $p->TIPO_CANAL_dataFimVersao  == '') 
             <a href="{{ route('admin::prazo::detalhes', ['idtipo' => $p->TIPO_CANAL_idTipo, 
                         'idcanal' => $p->TIPO_CANAL_idCanal ]) }}" class="btn btn-warning">
                 <span class="fa fa-edit"></span>
             </a>
+            @endif
         </td>
     </tr>
     @endforeach

@@ -101,11 +101,11 @@ class TipoController extends ConfigController
     public function excluir($id){
         $data = array();
         try{
-            //$tipoM = new \App\TipoManifestacao($this->dbname);
-            $tipoM = \App\TipoManifestacao::find($id);
             
+            $tipoM = \App\TipoManifestacao::find($id);
+            $tipoMDao = new \App\Repository\TipoManifestacaoDao(new \App\TipoManifestacao);
             if($tipoM == null){
-                $data["resp"] = "<div class='alert alert-warning'>Tipo da empresa não encontrado!</div>";
+                $data["resp"] = "<div class='alert alert-warning'>Tipo de Manifestação não encontrado!</div>";
                 return view('admin.sistema.tipo.buscar', $data);
             }
             
@@ -122,6 +122,9 @@ class TipoController extends ConfigController
             }else{
                 $data["resp"] = "<div class='alert alert-danger'>Tipo de Manifestação não editado!</div>";
             }
+            
+            $lista = $tipoMDao->buscar("%", "");
+            $data["listaManif"] = $lista;
         }  catch (\Exception $e){
             echo $e->getMessage();
             $data["resp"] = "<div class='alert alert-danger'>Tipo da empresa não alterado!</div>";

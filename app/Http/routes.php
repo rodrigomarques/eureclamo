@@ -90,6 +90,9 @@ Route::group([ 'prefix' => '/admin/', 'middleware' => ['auth']], function(){
             Route::match(['get', 'post'], '/{id}/detalhes.html', [ 'uses' => 'EmpresaController@detalhesusuario', 
              'as' => 'admin::empresa::usuario::detalhes']);
             
+            Route::match(['get', 'post'], '/{id}/excluir.html', [ 'uses' => 'EmpresaController@excluirusuario', 
+             'as' => 'admin::empresa::usuario::excluir']);
+            
             Route::match(['get', 'post'], '/buscar.html', [ 'uses' => 'EmpresaController@buscarusuario', 
                 'as' => 'admin::empresa::usuario::buscar']);
         });
@@ -131,6 +134,9 @@ Route::group([ 'prefix' => '/admin/', 'middleware' => ['auth']], function(){
             
             Route::match(['get', 'post'], '/buscar.html', [ 'uses' => 'PrestadorController@buscarusuario', 
                 'as' => 'admin::prestador::usuario::buscar']);
+            
+            Route::match(['get', 'post'], '/{id}/excluir.html', [ 'uses' => 'PrestadorController@excluirusuario', 
+                'as' => 'admin::prestador::usuario::excluir']);
         });
         
         Route::group(['prefix' => '/perfil/'], function(){
@@ -165,6 +171,9 @@ Route::group([ 'prefix' => '/admin/', 'middleware' => ['auth']], function(){
         
         Route::match(['get', 'post'], '/{ano}/{id}/cadastrar-passo2.html', [ 'uses' => 'ManifestacaoController@passo2', 
              'as' => 'admin::manifestacao::passo2']);
+        
+        Route::match(['get', 'post'], '/{ano}/{id}/cadastrar-passo3.html', [ 'uses' => 'ManifestacaoController@passo3', 
+             'as' => 'admin::manifestacao::passo3']);
         
         
         Route::match(['get', 'post'], '/buscarreclamante.html', [ 'uses' => 'ManifestacaoController@buscarreclamante', 

@@ -436,8 +436,15 @@ class EmpresaController extends ConfigController
             echo $e->getMessage();
             $data["resp"] = "<div class='alert alert-danger'>Tipo da empresa não alterado!</div>";
         }
+        $dbempresa = new \App\Empresa();
+        $produtoemp = new \App\ProdutoEmpresa();
+        $prodEmpDao = new \App\Repository\ProdutoEmpresaDao($produtoemp);
         
-        
+        $lista = $prodEmpDao->buscar("", "", "", "");
+        $data["listaP"] = $lista;
+                
+        $lista = $dbempresa->orderBy("EMPRESA_nome")->get();
+        $data["lista"] = $lista;
         return view('admin.sistema.empresa.produto.buscar', $data);
     }
     
@@ -523,6 +530,44 @@ class EmpresaController extends ConfigController
             $lista = $usuarioEDao->buscar( "%",  "%", "%");
             $data["listaP"] = $lista;
         }
+        
+        return view('admin.sistema.empresa.usuario.buscar', $data);
+    }
+    
+    public function excluirusuario($id, Request $request){
+        $data = array();
+        try{
+            $usuarioEmpresa = \App\Usuario::find($id);
+            
+            if($usuarioEmpresa == null){
+                $data["resp"] = "<div class='alert alert-warning'>Usuario da empresa não encontrado!</div>";
+                return view('admin.sistema.empresa.usuario.buscar', $data);
+            }
+            
+            if($usuarioEmpresa->USUARIO_status == 1)
+                $usuarioEmpresa->USUARIO_status = 0;
+            else
+                $usuarioEmpresa->USUARIO_status = 1;
+            
+            if($usuarioEmpresa->save()){
+                if($usuarioEmpresa->USUARIO_status == 1)
+                $data["resp"] = "<div class='alert alert-success'>Usuario empresa ativado com sucesso!</div>";
+                else
+                $data["resp"] = "<div class='alert alert-success'>Usuário empresa excluído com sucesso!</div>";
+            }else{
+                $data["resp"] = "<div class='alert alert-danger'>Usuário empresa não editado!</div>";
+            }
+            
+             $usuarioEDao = new \App\Repository\UsuarioEmpresaDao(new \App\UsuarioEmpresa());
+        
+            $lista = $usuarioEDao->buscar( "%",  "%", "%");
+            $data["listaP"] = $lista;
+        
+        }  catch (\Exception $e){
+            echo $e->getMessage();
+            $data["resp"] = "<div class='alert alert-danger'>Usuário empresa não alterado!</div>";
+        }
+        
         
         return view('admin.sistema.empresa.usuario.buscar', $data);
     }

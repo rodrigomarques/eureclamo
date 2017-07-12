@@ -119,9 +119,9 @@
           </a>
           <ul class="treeview-menu">
             <li><a href="{{ route( 'admin::canais::cadastrar')}}">Cadastrar Canal</a></li>
-            <li><a href="{{ route('admin::canais::buscar') }}">Buscar Canal por Empresa</a></li>
-            <li><a href="{{ route('admin::tipo::cadastrar') }}">Cadastrar Tipo</a></li>
-            <li><a href="{{ route('admin::tipo::buscar') }}">Buscar Tipo por Empresa</a></li>
+            <li><a href="{{ route('admin::canais::buscar') }}">Buscar Canal</a></li>
+            <li><a href="{{ route('admin::tipo::cadastrar') }}">Cadastrar Tipo Manifestação</a></li>
+            <li><a href="{{ route('admin::tipo::buscar') }}">Buscar Tipo Manifestação</a></li>
             <li><a href="{{ route('admin::prazo::adicionar') }}">Cadastrar Prazo</a></li>
             <li><a href="{{ route('admin::prazo::buscar') }}">Buscar Prazo</a></li>
           </ul>

@@ -27,51 +27,80 @@ $(function(){
       <div class="box box-primary">
           <div class="box-body">
               <div class="row">
-              <div class="col-xs-4 linha">
-                <b>Código da manifestação: <br></b>
-                {{ $m->MANIF_id }}
+              <div class="col-xs-3 linha">
+                <b>Empresa: <br></b>
+                {{ $m->EMPRESA_nomeCompleto }}
               </div>
-              <div class="col-xs-4 linha">
+              <div class="col-xs-3 linha">
+                <b>Tipo Manifestação: <br></b>
+                {{ $m->TIPOMANIF_nome }}
+              </div>
+              <div class="col-xs-2 linha">
                 <b>Nível: <br></b>
                 {{ $m->MANIF_nivel }}
               </div>
-              <div class="col-xs-4 linha">
+              <div class="col-xs-2 linha">
                   <b>Canal: <br></b>
                 {{ $m->CANAL_nome }}
               </div>
+                  <div class="col-xs-2 linha">
+                  <b>Código do Reclamante: <br></b>
+                {{ $m->MANIF_codReclamanteEmp }}
               </div>
+              </div>
+              
               <div class="row">
-              <div class="col-xs-3 linha">
+              <div class="col-xs-4 linha">
                 <b>Nome Reclamante: <br></b>
                 {{ $m->RECLAMANTE_nome }}
               </div>
                   <div class="col-xs-3 linha">
-                <b>E-mail: <br></b>
-                {{ $m->RECLAMANTE_email }}
-              </div>
-              <div class="col-xs-3 linha">
-                <b>Celular: <br></b>
-                {{ $m->RECLAMANTE_celular }}
-              </div>
-              <div class="col-xs-3 linha">
-                  <b>Telefone: <br></b>
-                {{ $m->RECLAMANTE_telefone }}
-              </div>
-              </div>
-              <div class="row">
-              <div class="col-xs-4 linha">
-                <b>Empresa: <br></b>
-                {{ $m->EMPRESA_nomeCompleto }}
-              </div>
-              <div class="col-xs-4 linha">
                 <b>Produto: <br></b>
                 {{ $m->PRODUTO_nome }}
               </div>
+              <div class="col-xs-2 linha">
+                <b>Código da Manifestação: <br></b>
+                {{ $m->MANIF_id }}
+              </div>
+              <div class="col-xs-3 linha">
+                  <b>Serviço: <br></b>
+                 ----------- BUSCAR AINDA -----------
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-3 linha">
+                <b>Data da Entrada no Canal: <br></b>
+                @if($m->MANIF_dataHora_EntCanal != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->format('d/m/Y H:i') }}
+                @endif
+              </div>
+              <div class="col-xs-3 linha">
+                <b>Data da Gestão: <br></b>
+                @if($m->MANIF_dataHora_EntGestao != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntGestao)->format('d/m/Y H:i') }}
+                @endif
+              </div>
+              </div>
+              <div class="row">
+              <div class="col-xs-3 linha">
+                <b>Data da Ocorrencia: </b>
+                @if($m->MANIF_dataHora_Ocorrencia != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Ocorrencia)->format('d/m/Y H:i') }}
+                @endif
+                <br>
+                <b>Localidade: </b>
+                {{ $m->LOCALIDADE_nome }}
+              </div>
+              <div class="col-xs-5 linha">
+                <b>Endereço: <br></b>
+                {{ $m->MANIF_endereco }}
+              </div>
               <div class="col-xs-4 linha">
-                <b>Tipo: <br></b>
-                {{ $m->TIPOMANIF_nome }}
+                <b>Referência: <br></b>
+                {{ $m->MANIF_referencia }}
               </div>
               </div>
+              <?php /*
               <div class="row">
               <div class="col-xs-12 linha">
                 <b>Resumo: <br></b>
@@ -110,6 +139,7 @@ $(function(){
                 {{ $m->LOCALIDADE_nome }}
               </div>
               </div>
+               * */ ?>
               <div class="row">
               <div class="col-xs-12 linha">
                     <b>Completa: <br></b>
@@ -137,7 +167,11 @@ $(function(){
                      <tr>
                          <td>{{ $mm->PRESTADOR_nome}}</td>
                          <td>{{ $mm->PRESTADOR_nome}}</td>
-                         <td>{{ $mm->MSG_USUARIO_dataHoraMsg}}</td>
+                         <td>
+                             @if($mm->MSG_USUARIO_dataHoraMsg != NULL)
+                            {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mm->MSG_USUARIO_dataHoraMsg)->format('d/m/Y H:i') }}
+                            @endif
+                         </td>
                          <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
                      </tr>
                      </table>
@@ -182,6 +216,7 @@ $(function(){
               </div>
           </div>
       </div>
+        <?php /*
         <?php if($m->MANIF_status == 1): ?>
             <a href="#dvanexo" class="btn btn-primary anexo">Anexos</a>
             <!--<a href="{{ route('admin::manifestacao::mensagens', 
@@ -220,6 +255,8 @@ $(function(){
                 <input type="submit" value="Concluir" class="btn btn-primary">
             </form>
         </div>
+         * 
+         */ ?>
     </div>
     </div>
 </div>

@@ -15,7 +15,7 @@ class UsuarioEmpresaDao {
         $this->model = $ue;
     }
     
-    public function buscar($nome = "", $login = "", $email = ""){
+    public function buscar($nome = "", $login = "", $email = "", $status = 1){
         $result = $this->model
                 ->join('usuario', 'usuarioempresa.USUARIO_EMP_idUsuario', '=', 'usuario.USUARIO_id')
                 ->join('empresa', 'empresa.EMPRESA_id', '=', 'usuarioempresa.USUARIO_EMP_idEmpresa')
@@ -30,7 +30,10 @@ class UsuarioEmpresaDao {
         
         if($email != "")
             $result->Where('USUARIO_email', 'like', "%".$email . "%");
-                        
+        
+        if($status != "")
+            $result->Where('USUARIO_status', '=', $status);
+        
             $result->orderBy("USUARIO_nome");
             //echo $result->toSql();
             

@@ -413,4 +413,43 @@ class PrestadorController extends ConfigController
             
         return view('admin.sistema.prestador.servico.detalhes', $data);
     }
+    
+    public function excluirusuario($id, Request $request){
+        $data = array();
+        try{
+            $usuarioEmpresa = \App\Usuario::find($id);
+            
+            if($usuarioEmpresa == null){
+                $data["resp"] = "<div class='alert alert-warning'>Usuario do prestador não encontrado!</div>";
+                return view('admin.sistema.prestador.usuario.buscar', $data);
+            }
+            
+            if($usuarioEmpresa->USUARIO_status == 1)
+                $usuarioEmpresa->USUARIO_status = 0;
+            else
+                $usuarioEmpresa->USUARIO_status = 1;
+            
+            if($usuarioEmpresa->save()){
+                if($usuarioEmpresa->USUARIO_status == 1)
+                $data["resp"] = "<div class='alert alert-success'>Usuario do prestador ativado com sucesso!</div>";
+                else
+                $data["resp"] = "<div class='alert alert-success'>Usuário do prestador excluído com sucesso!</div>";
+            }else{
+                $data["resp"] = "<div class='alert alert-danger'>Usuário prestador não editado!</div>";
+            }
+            
+            $usuarioPrestador = new \App\UsuarioPrestador();
+            $usuarioPDao = new \App\Repository\UsuarioPrestadorDao($usuarioPrestador);
+
+            $lista = $usuarioPDao->buscar("%", "%", "%");
+            $data["listaP"] = $lista;
+        }  catch (\Exceptionus $e){
+            echo $e->getMessage();
+            $data["resp"] = "<div class='alert alert-danger'>Usuário prestador não alterado!</div>";
+        }
+        
+        
+        return view('admin.sistema.prestador.usuario.buscar', $data);
+    }
+    
 }

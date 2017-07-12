@@ -42,24 +42,30 @@ class ManifestacaoController extends ConfigController
                 $idtipomanif= $request->input("tipomanif");
                 $idreclamante= $request->input("reclamante");
                 $idlocalidade = $request->input("idlocalidade");
+                $nprotocolocanal = $request->input("nprotocolocanal");
                 
-				try{
-					if($dtentradacanal != "") $entradacanal = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradacanal." ".$hrentradacanal);
-					else $entradacanal = null;
-				}catch(\Exception $e){ $entradacanal = null; }
+                $tipoManifCanalDao = new \App\Repository\TipoManifestacaoCanalDao(new \App\TipoManifestacaoCanal);
+                $tipoManifCanal = $tipoManifCanalDao->buscarIdTIpoIdCanalUltimo($idtipomanif, $idcanal);
 				
-				try{
-				if($dtentradaocorrencia != "") $entradaocorrencia = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradaocorrencia. " " .$hrentradaocorrencia);
-				else $entradaocorrencia = null;
-				}catch(\Exception $e){ $entradaocorrencia = null; }
-				
-				try{
-				if($dtentradagestao != "") $entradagestao = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradagestao." ".$hrentradagestao);
-				else $entradagestao = null;
+                try{
+                        if($dtentradacanal != "") $entradacanal = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradacanal." ".$hrentradacanal);
+                        else $entradacanal = null;
+                }catch(\Exception $e){ $entradacanal = null; }
+
+                try{
+                if($dtentradaocorrencia != "") $entradaocorrencia = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradaocorrencia. " " .$hrentradaocorrencia);
+                else $entradaocorrencia = null;
+                }catch(\Exception $e){ $entradaocorrencia = null; }
+
+                try{
+                if($dtentradagestao != "") $entradagestao = \Carbon\Carbon::createFromFormat('d/m/Y H:i', $dtentradagestao." ".$hrentradagestao);
+                else $entradagestao = null;
                 }catch(\Exception $e){ $entradagestao = null; }
                 
 				if($idtipomanif == null || $idtipomanif == ""){
 					$data["resp"] = "<div class='alert alert-warning'>O Tipo de manifestação é obrigatório!</div>";
+                                }else if($tipoManifCanal == null){
+                                    $data["resp"] = "<div class='alert alert-warning'>O Tipo de manifestação e canal não encontrados!</div>";
 				}else{
 					
 					$manifestacao = new \App\Manifestacao();
@@ -68,6 +74,7 @@ class ManifestacaoController extends ConfigController
 					$manifestacao->MANIF_TIPO_CANAL_idCanal = $idcanal;
 					$manifestacao->MANIF_EMPRESA_idEmpresa = $empresa;
 					$manifestacao->MANIF_PRODUTO_idProduto = $produto;
+					$manifestacao->MANIF_TIPO_CANAL_nrVersao = $tipoManifCanal->TIPO_CANAL_nrVersao;
 					//Verificar se o Reclamante ja esta cadastro, senao cadastrar um novo
 					$manifestacao->MANIF_RECLAMANTE_idReclamante = 0000;
 					//$manifestacao->MANIF_LOCALIDADE_id = 0000000003;
@@ -84,6 +91,7 @@ class ManifestacaoController extends ConfigController
 					$manifestacao->MANIF_prazoResposta = $prazoresposta;
 					$manifestacao->MANIF_nivel = $nivel;
 					$manifestacao->MANIF_RECLAMANTE_idReclamante = 0;
+					$manifestacao->MANIF_nrProtocoloCanal = $nprotocolocanal;
 					/*
 						1 - Aberta
 						0 - Cancelada
@@ -156,12 +164,41 @@ class ManifestacaoController extends ConfigController
     
     public function passo2($ano, $idmanifestacao, Request $request){
         $data = array();
+        $manifestacao = new \App\Manifestacao();
+        $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
+        $manif = $manifDao->buscarId($idmanifestacao, $ano);
+        if($manif == null){
+            $tipoManifest = new \App\TipoManifestacao();
+            $canal = new \App\Canal();
+            $localidade = new \App\Localidade();
+            
+            $listaM = $tipoManifest->get();
+            $listaC = $canal->get();
+            $listaL = $localidade->get();
+
+            $data["listaM"] = $listaM;
+            $data["listaC"] = $listaC;
+            $data["listaL"] = $listaL;
+
+            return view('admin.sistema.manifestacao.buscar', $data);
+        }
+        
+        $data["m"] = $manif;
+        $data["idmanifestacao"] = $idmanifestacao;
+        $data["ano"] = $ano;
+		
+        return view('admin.sistema.manifestacao.passo2', $data);
+    }
+    
+    public function passo3($ano, $idmanifestacao, Request $request){
+        $data = array();
         
         $servicos = new \App\Servico();
         $listaServ = \App\Servico::whereServico_status(1)->orderBy("SERVICO_nome")->get();
         
         if($request->isMethod("POST")){
             try{
+                $manifDao = new \App\Repository\ManifestacaoDao(new \App\Manifestacao);
                 $idservico = $request->input("servicos");
                 $idprestador = $request->input("idprestador");
                 $msguser = 
@@ -178,27 +215,54 @@ class ManifestacaoController extends ConfigController
                     $mensagemusuario->MSG_USUARIO_idUsuario = Auth::user()->USUARIO_id;
                     //enviar email para o usuario prestador
                     $mensagemusuario->save();
-                    $data["resp"] = "<div class='alert alert-success'>Manifestação cadastrada!</div>";
+                    $data["resp"] = "<div class='alert alert-success'>Prestador Notificado com Sucesso.</div>";
                     
                     $usuarioPrestadorDao = new \App\Repository\UsuarioPrestadorDao(new \App\UsuarioPrestador);
                     $listaP = $usuarioPrestadorDao->buscarEmailPorIdPrestador($idprestador);
+                    
+                    $m = $manifDao->buscarId($idmanifestacao, $ano);
+                    
                     if(count($listaP) > 0):
                         foreach ($listaP as $p):
                         //echo "Email: " . $p["USUARIO_email"];
                         if($p["USUARIO_email"] != ""){
+                            
+                            $dtAtual = \Carbon\Carbon::now('America/Sao_Paulo');
+                            $entradaCanal= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->addHours($m->MANIF_prazoResposta);
+                            $segundos = $dtAtual->diffInSeconds($entradaCanal); // 3
+                            
+                            $dias = floor($segundos / (60 * 60 * 24));
+                            $dias_mod = $segundos % (60 * 60 * 24);
+
+                            $horas = floor($dias_mod / (60 * 60));
+                            $horas_mod = $dias_mod % (60 * 60);
+
+                            $minutos = floor($horas_mod / 60);
+                            $segundos_f = $horas_mod % 60;
+                            $dtformat = "";
+                            
+                            if($dtAtual > $entradaCanal){
+                                $dtformat = "-" . $dias . " " . $horas . ":".$minutos.":".$segundos_f;
+                            }else{
+                                $dtformat = $dias . " " . $horas . ":".$minutos.":".$segundos_f;
+                            }
+                        
+                            
+                            
 						//echo $p["USUARIO_email"];
                             try{
                                 $headers = "MIME-Version: 1.1\r\n";
                                 $headers .= "Content-type: text/html; charset=UTF-8\r\n";
                                 $headers .= "From: contato.eureclamo@gmail.com\r\n"; // remetente
                                 $headers .= "Return-Path: contato.eureclamo@gmail.com\r\n"; // return-path
+                                //$envio = mail("marques.coti@gmail.com", "EU RECLAMO::Manifestação", ""
                                 $envio = mail($p["USUARIO_email"], "EU RECLAMO::Manifestação", ""
                                         . "Prezados Senhores, ".
-										$request->input("msginicio")." <br><br>
+                        " <br><br>
 
     Foi recebida uma reclamação pela  cujo serviço foi prestado por sua empresa.<br><br>
 
-    Esta reclamação deve ser respondida por sua empresa em <hh:mm>.<br><br>
+    Esta reclamação deve ser respondida por sua empresa em " .$dtformat. ".<br><br>
 
     Para ver e responder a reclamação acesse o link abaixo:<br><br>
 
@@ -228,25 +292,26 @@ class ManifestacaoController extends ConfigController
         $data["ano"] = $ano;
         $data["listaServ"] = $listaServ;
 		
-		
+	
         $listaMsg = $msgUsuarioDao->buscarPorManifestacao($idmanifestacao, $ano);
         $data["listaMsg"] = $listaMsg;
         
-        return view('admin.sistema.manifestacao.passo2', $data);
+        return view('admin.sistema.manifestacao.passo3', $data);
     }
     
      
     
     public function buscar(Request $request){
+        date_default_timezone_set('America/Sao_Paulo');
         $data = array();
         $tipoManifest = new \App\TipoManifestacao();
         $canal = new \App\Canal();
         $localidade = new \App\Localidade();
+        $manifestacao = new \App\Manifestacao();
+                $manifestacaoDao = new \App\Repository\ManifestacaoDao($manifestacao);
+        $data["horario"] = "Consulta realizada em " . date('d/m/Y H:i:s');
         if($request->isMethod("POST")){
             try{
-                
-                $manifestacao = new \App\Manifestacao();
-                $manifestacaoDao = new \App\Repository\ManifestacaoDao($manifestacao);
                 
                 $idcanal = $request->input("idcanal");
                 $idtipo = $request->input("idtipo");
@@ -269,6 +334,9 @@ class ManifestacaoController extends ConfigController
             } catch (Exception $ex) {
                 $data["resp"] = "<div class='alert alert-warning'>Consulta da manifestação não pode ser realizada!</div>";
             }
+        }else{
+            $lista = $manifestacaoDao->buscar("", "", "", "", "", "");
+            $data["listaManif"] = $lista;
         }
         
         $listaM = $tipoManifest->whereTipomanif_status(1)->get();
@@ -419,8 +487,8 @@ class ManifestacaoController extends ConfigController
                 $size = $file->getSize();
                 $msg = "";
 
-                if($size > (1024 * 1024 * 2)){
-                    $msg = "Tamanho máximo de 2mb.<br>";
+                if($size > (1024 * 1024 * 1)){
+                    $msg = "Tamanho máximo de 1mb.<br>";
                 }
 
                 if($ext != "jpg" && $ext != "jpeg" && $ext != "png" && $ext != "pdf" && $ext != "doc"){
@@ -450,13 +518,14 @@ class ManifestacaoController extends ConfigController
                 }
             }
         }  catch (\Exception $e){
+            //echo $e->getMessage();
             $msg = "Anexo não pode ser adicionado!";
             $data["resp"] = "<div class='alert alert-danger'>" . $msg . "</div>";
         }
         try{
             $manifestacao = new \App\Manifestacao();
             $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
-            $manif = $manifDao->buscarId($id);
+            $manif = $manifDao->buscarId($id, $ano);
             if($manif == null){
                 $tipoManifest = new \App\TipoManifestacao();
                 $canal = new \App\Canal();
@@ -477,7 +546,7 @@ class ManifestacaoController extends ConfigController
         }catch(\Exception $e){
             
         }
-        return view('admin.sistema.manifestacao.detalhes', $data);
+        return view('admin.sistema.manifestacao.passo2', $data);
     }
     
     public function reclamantes(Request $request){
