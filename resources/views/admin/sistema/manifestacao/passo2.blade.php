@@ -42,7 +42,7 @@ $(function(){
                         ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" enctype="multipart/form-data">
                 <input type="hidden" name="_token" value="{{ csrf_token() }}">
                 <div class="form-group">
-                    Anexo:
+                    Anexo (Limite 300KB):
                     <input type="file" name="anexo" class="form-control">
                 </div>
                 <input type="submit" value="Adicionar Anexo" class="btn btn-primary">
@@ -55,7 +55,7 @@ $(function(){
               <div class="row">
               <div class="col-xs-4 linha">
                 <b>Código da manifestação: <br></b>
-                {{ $m->MANIF_id }}
+                {{ $m->MANIF_EMPRESA_idEmpresa }}{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Cadastro)->format('Ymd') }}{{ $m->MANIF_id }}
               </div>
               <div class="col-xs-4 linha">
                 <b>Nível: <br></b>
@@ -91,7 +91,7 @@ $(function(){
                    
               </div>
               <div class="col-xs-4 linha">
-                  <b>Número do protocolo: <br></b>
+                  <b>Número do Protocolo Canal: <br></b>
                   {{ $m->MANIF_nrProtocoloCanal }}
                     
               </div>
@@ -119,18 +119,24 @@ $(function(){
           <div class="row">
               <div class="col-xs-3 linha">
                 <b>Entrada no canal: <br></b>
-                {{ $m->MANIF_dataHora_EntCanal }}
+                @if($m->MANIF_dataHora_EntCanal != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->format('d/m/Y H:i') }}
+                @endif
               </div>
               <div class="col-xs-3 linha">
                 <b>Data da ocorrência: <br></b>
-                {{ $m->MANIF_dataHora_Ocorrencia }}
+                @if($m->MANIF_dataHora_Ocorrencia != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Ocorrencia)->format('d/m/Y H:i') }}
+                @endif
               </div>
               <div class="col-xs-3 linha">
                 <b>Entrada na gestão: <br></b>
-                {{ $m->MANIF_dataHora_EntGestao }}
+                @if($m->MANIF_dataHora_EntGestao != NULL)
+                {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntGestao)->format('d/m/Y H:i') }}
+                @endif
               </div>
               <div class="col-xs-3 linha">
-                <b>Prazo de Resposta: <br></b>
+                <b>Prazo de Resposta (Horas): <br></b>
                 {{ $m->MANIF_prazoResposta }}
               </div>
               </div>
@@ -204,12 +210,26 @@ $(function(){
                                   $an->ANEXO_MANIF_tipoArq == "png"){
                                     echo "<div class='col-xs-4'>";
                                     echo "<img src='data:image/" . $an->ANEXO_MANIF_tipoArq . ";base64," . $an->ANEXO_MANIF_arquivo."' class='img-responsive' style='height:100px !important;'>";
+                                    ?>
+                                    <form method="post" action="{{ route('admin::manifestacao::anexosexcluir', 
+                                      ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="hidden" name="idanexo" value="{{ $an->ANEXO_MANIF_idAnexo }}">
+                                        <input type="submit" value="X" class="btn btn-danger">
+                                    </form>
+                                    <?php
                                     echo "</div>";
                                   }else{
                                       echo "<div class='col-xs-4'>";
                                       ?><a href="{{ asset("anexos/" . $an->ANEXO_MANIF_nomeArq) }}" class="btn btn-default" target="_blank">
                                           Download
                                       </a>
+                                        <form method="post" action="{{ route('admin::manifestacao::anexosexcluir', 
+                                          ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}">
+                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                            <input type="hidden" name="idanexo" value="{{ $an->ANEXO_MANIF_idAnexo }}">
+                                            <input type="submit" value="X" class="btn btn-danger">
+                                        </form>
                                           <?php
                                     echo "</div>";
                                   }

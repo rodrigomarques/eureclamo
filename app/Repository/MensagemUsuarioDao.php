@@ -23,7 +23,8 @@ class MensagemUsuarioDao {
                    $join->on('mensagemusuario.MANIFESTACAO_id', '=', 'manifestacao.MANIF_id');
                 })
                 ->join('prestador', 'prestador.PRESTADOR_id', '=', 'mensagemusuario.SERVICOPRESTADOR_idPrestador')
-                ->join('servico', 'servico.SERVICO_id', '=', 'mensagemusuario.SERVICOPRESTADOR_idServico');
+                ->join('servico', 'servico.SERVICO_id', '=', 'mensagemusuario.SERVICOPRESTADOR_idServico')
+                ->join('usuario', 'usuario.USUARIO_id', '=', 'mensagemusuario.MSG_USUARIO_idUsuario');
 				
 			$result->where("manifestacao.MANIF_id", "=", $idmanifestacao);
 			$result->where("manifestacao.MANIF_ano", "=", $ano);

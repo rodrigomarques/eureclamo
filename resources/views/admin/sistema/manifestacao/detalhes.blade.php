@@ -24,6 +24,11 @@ $(function(){
     <h3 class="page-header" id="titulo">Detalhes Manifestação</h3>
     <div class="row">
     <div class="col-xs-12">
+        <a href="{{ route('admin::manifestacao::passo3', 
+                        ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" 
+       class="btn btn-primary">Notificar Novos Prestadores</a>
+       <br>
+       <br>
       <div class="box box-primary">
           <div class="box-body">
               <div class="row">
@@ -60,7 +65,7 @@ $(function(){
               </div>
               <div class="col-xs-2 linha">
                 <b>Código da Manifestação: <br></b>
-                {{ $m->MANIF_id }}
+                {{ $m->MANIF_EMPRESA_idEmpresa }}{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Cadastro)->format('Ymd') }}{{ $m->MANIF_id }}
               </div>
               <div class="col-xs-3 linha">
                   <b>Serviço: <br></b>
@@ -166,7 +171,7 @@ $(function(){
                         </tr>
                      <tr>
                          <td>{{ $mm->PRESTADOR_nome}}</td>
-                         <td>{{ $mm->PRESTADOR_nome}}</td>
+                         <td>{{ $mm->SERVICO_nome}}</td>
                          <td>
                              @if($mm->MSG_USUARIO_dataHoraMsg != NULL)
                             {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mm->MSG_USUARIO_dataHoraMsg)->format('d/m/Y H:i') }}
@@ -175,6 +180,18 @@ $(function(){
                          <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
                      </tr>
                      </table>
+                  <form method="post" >
+                      <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                      <div class="form-group">
+                        Responder mensagem:
+                        <textarea name="msgresposta" class="form-control" rows="3"></textarea>
+                      </div>
+                      <input type="hidden" name="idmanif" value="{{ $m->MANIF_id }}" >
+                      <input type="hidden" name="anomanif" value="{{ $m->MANIF_ano }}" >
+                      <input type="hidden" name="idprestador" value="{{ $mm->PRESTADOR_id }}" >
+                      <input type="hidden" name="idservico" value="{{ $mm->SERVICO_id }}" >
+                      <input type="submit" value="RESPONDER" class="btn btn-primary">
+                  </form>
                  </div>
                  </div>
                      @endforeach

@@ -49,6 +49,8 @@
                             alert("Preencha o campo data e hora da ocorrência corretamente");
                     }else if(dtNOcorrencia > dtNEntrada){
                         alert("Preencha o campo data e hora da ocorrência corretamente");
+                    }else if(dtNCanal > dtNEntrada){
+                        alert("Preencha o campo data e hora da entrada da ocorrência corretamente");
                     }else{
                             return true;
                     }
@@ -314,7 +316,7 @@
     </div>
     <div class="row">
         <div class="form-group col-xs-6">
-            Protocolo do Canal:
+            Número do Protocolo Canal:
             <input type="text" name="nprotocolocanal" class="form-control" required>
         </div>
     </div>

@@ -51,7 +51,8 @@ class ManifestacaoDao {
         }
         
                         
-            $result->orderBy("MANIF_dataHora_Cadastro", "desc");
+            //$result->orderBy("MANIF_dataHora_Cadastro", "desc");
+            $result->orderBy("MANIF_dataHora_EntCanal", "asc");
             $result->limit(50)            ;
         return $result->select('*')
                 ->distinct()->get();
@@ -66,8 +67,6 @@ class ManifestacaoDao {
                 ->leftJoin('localidade', 'localidade.LOCALIDADE_id', '=', 'manifestacao.MANIF_LOCALIDADE_id')
                 ->leftJoin('reclamante', 'reclamante.RECLAMANTE_id', '=', 'manifestacao.MANIF_RECLAMANTE_idReclamante')
                         ;
-        
-        
         
         $result->Where('MANIF_id', '=', $id);
         $result->Where('MANIF_ano', '=', $ano);

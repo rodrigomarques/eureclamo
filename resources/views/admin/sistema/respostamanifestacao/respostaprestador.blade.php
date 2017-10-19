@@ -64,6 +64,13 @@
             }
             
             setTimeout(esconder, 4000);
+            
+            $(".btnresponder").on('click', function(){
+                var idservico = $(this).attr('data-value');
+                $(".lblresposta").show();
+                $(".idservico").val(idservico);
+                
+            })
         })    
                 </script>
 </head>
@@ -135,12 +142,9 @@ $(function(){
               </div>
               <div class="col-xs-2 linha">
                 <b>Código da Manifestação: <br></b>
-                {{ $m->MANIF_id }}
+                {{ $m->MANIF_EMPRESA_idEmpresa }}{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Cadastro)->format('Ymd') }}{{ $m->MANIF_id }}
               </div>
-              <div class="col-xs-3 linha">
-                  <b>Serviço: <br></b>
-                 ----------- BUSCAR AINDA -----------
-              </div>
+              
               </div>
               <div class="row">
               <div class="col-xs-3 linha">
@@ -157,7 +161,7 @@ $(function(){
               </div>
                   <div class="col-xs-offset-3 col-xs-3 linha">
                       <div class="alert alert-danger">
-                    <b>Prazo de resposta: <br></b>
+                    <b>Responder até: <br></b>
                     <?php
                         $dtAtual = \Carbon\Carbon::now('America/Sao_Paulo');
                         $entradaCanal= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->addHours($m->MANIF_prazoResposta);
@@ -257,7 +261,7 @@ $(function(){
               ?>
               @if(count($msgUsuario) > 0)
                   
-                     @foreach($msgUsuario as $mm)
+                     
                      <div class="row">
               <div class="col-xs-12 linha">
                     <table class="table table-bordered">
@@ -266,21 +270,32 @@ $(function(){
                             <th>SERVIÇO</th>
                             <th>DATA</th>
                             <th>MENSAGEM</th>
+                            <th>AUTOR</th>
+                            <th>RESPONDER</th>
                         </tr>
+                        @foreach($msgUsuario as $mm)
                      <tr>
                          <td>{{ $mm->PRESTADOR_nome}}</td>
-                         <td>{{ $mm->PRESTADOR_nome}}</td>
+                         <td>{{ $mm->SERVICO_nome}}</td>
                          <td>
                              @if($mm->MSG_USUARIO_dataHoraMsg != NULL)
                             {{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $mm->MSG_USUARIO_dataHoraMsg)->format('d/m/Y H:i') }}
                             @endif
                          </td>
                          <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
+                         <td>{{ $mm->USUARIO_nome }}</td>
+                         <td>
+                             <a href="#resposta" class="btnresponder btn btn-success" data-value="{{ $mm->SERVICO_id }}">
+                                 <span class="fa fa-share"></span>
+                             </a>
+                         </td>
                      </tr>
-                     </table>
-                 </div>
-                 </div>
                      @endforeach
+                     </table>
+                 
+                 </div>
+                 </div>
+
                     
               @endif
               <?php if($m->MANIF_status != 1): ?>
@@ -314,6 +329,21 @@ $(function(){
                           endforeach;
                       endif;
                       ?>
+                  </div>
+              </div>
+              <div class="row">
+                  <div class="col-xs-12 linha lblresposta" style="display: none;">
+                       <form method="post" id="resposta" >
+                      <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                      <div class="form-group">
+                        Responder mensagem:
+                        <textarea name="msgresposta" class="form-control" rows="3"></textarea>
+                      </div>
+                      <input type="hidden" name="idmanif" value="{{ $m->MANIF_id }}" >
+                      <input type="hidden" name="anomanif" value="{{ $m->MANIF_ano }}" >
+                      <input type="text" name="idservico" class="idservico" value="" >
+                      <input type="submit" value="RESPONDER" class="btn btn-primary">
+                  </form>
                   </div>
               </div>
           </div>

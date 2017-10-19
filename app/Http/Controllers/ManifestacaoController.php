@@ -204,6 +204,9 @@ class ManifestacaoController extends ConfigController
                 $msguser = 
                     \App\MensagemUsuario::whereManifestacao_idAndManifestacao_manif_anoAndServicoprestador_idservicoAndServicoprestador_idprestador($idmanifestacao, $ano, $idservico, $idprestador)->get();
                 if(count($msguser) == 0 ){
+                    
+                    //$serv1 = \App\Servico::whereServico_id($idservico)->first();
+                    
                     $mensagemusuario = new \App\MensagemUsuario();
                     $mensagemusuario->MSG_USUARIO_ano = date('Y');
                     $mensagemusuario->MSG_USUARIO_mensagem = $request->input("msginicio");
@@ -221,7 +224,7 @@ class ManifestacaoController extends ConfigController
                     $listaP = $usuarioPrestadorDao->buscarEmailPorIdPrestador($idprestador);
                     
                     $m = $manifDao->buscarId($idmanifestacao, $ano);
-                    
+                
                     if(count($listaP) > 0):
                         foreach ($listaP as $p):
                         //echo "Email: " . $p["USUARIO_email"];
@@ -246,6 +249,8 @@ class ManifestacaoController extends ConfigController
                             }else{
                                 $dtformat = $dias . " " . $horas . ":".$minutos.":".$segundos_f;
                             }
+                            
+                            $dtformat = $entradaCanal->format("dd/MM/yyyy HH:ii:ss");
                         
                             
                             
@@ -260,18 +265,18 @@ class ManifestacaoController extends ConfigController
                                         . "Prezados Senhores, ".
                         " <br><br>
 
-    Foi recebida uma reclamação pela  cujo serviço foi prestado por sua empresa.<br><br>
+    Foi recebida uma ".$m->TIPOMANIF_nome." pela ".$m->EMPRESA_nome."  cujo serviço foi prestado por sua empresa.<br><br>
 
-    Esta reclamação deve ser respondida por sua empresa em " .$dtformat. ".<br><br>
+    Esta ".$m->TIPOMANIF_nome." deve ser respondida por sua empresa até " .$dtformat. ".<br><br>
 
     Para ver e responder a reclamação acesse o link abaixo:<br><br>
 
     http://nequals.com.br/eureclamo/admin/public/manifestacao/".$ano."/".$idmanifestacao."/prestador.html
-
+    <br><br>
     Não responda este e-mail. Respostas através do e-mail serão desconsideradas. 
-
-    Atenciosamente
-    
+    <br><br>
+    Atenciosamente<br>
+   ".$m->EMPRESA_nome." <br>
     Gestão de Fornecedores", $headers);
                             } catch (Exception $ex) {
 
@@ -281,7 +286,8 @@ class ManifestacaoController extends ConfigController
                     endif;
                     
                 }else{
-                    $data["resp"] = "<div class='alert alert-info'>Manifestação ja cadastrada!</div>";    
+                    //$data["resp"] = "<div class='alert alert-info'>Manifestação ja cadastrada!</div>";    
+                    $data["resp"] = "<div class='alert alert-info'>Prestador ja cadastrado!</div>";    
                 }
             } catch (Exception $ex) {
                 $data["resp"] = "<div class='alert alert-info'>Manifestação não adicionado!</div>";
@@ -328,7 +334,7 @@ class ManifestacaoController extends ConfigController
                 
                 $lista = $manifestacaoDao->buscar($idcanal, $idtipo, $idlocalidade, 
                         $entrada, $nivel, $codigo);
-                
+                $data["tipoManif"] = $tipoManifest->whereTipomanif_id($idtipo)->first();
                 $data["listaManif"] = $lista;
                 
             } catch (Exception $ex) {
@@ -458,6 +464,7 @@ class ManifestacaoController extends ConfigController
         $manifestacao = new \App\Manifestacao();
         $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
         $manif = $manifDao->buscarId($id, $ano);
+        $idusuariologado = \Auth::user()->USUARIO_id;
         if($manif == null){
             $tipoManifest = new \App\TipoManifestacao();
             $canal = new \App\Canal();
@@ -474,8 +481,83 @@ class ManifestacaoController extends ConfigController
             return view('admin.sistema.manifestacao.buscar', $data);
         }
         
+        if($request->isMethod("POST")){
+            
+            $msgresposta = $request->input("msgresposta");
+            $idmanif = $request->input("idmanif");
+            $anomanif = $request->input("anomanif");
+            $idprestador = $request->input("idprestador");
+            $idservico = $request->input("idservico");
+            
+            $mensagemUsuario = new \App\MensagemUsuario();
+            $mensagemUsuario->MSG_USUARIO_ano = date('Y');
+            $mensagemUsuario->MSG_USUARIO_mensagem = $msgresposta;
+            $mensagemUsuario->MSG_USUARIO_dataHoraMsg = date('Y-m-d H:i:s');
+            $mensagemUsuario->MANIFESTACAO_id = $idmanif;
+            $mensagemUsuario->MANIFESTACAO_MANIF_ano = $anomanif;
+            $mensagemUsuario->SERVICOPRESTADOR_idServico = $idservico;
+            $mensagemUsuario->SERVICOPRESTADOR_idPrestador = $idprestador;
+            $mensagemUsuario->MSG_USUARIO_idUsuario = $idusuariologado;
+              
+            try{
+                if($mensagemUsuario->save())
+                    $data["resp"] = "<div class='alert alert-success'>Mensagem adicionada com sucesso!</div>";
+                else
+                    $data["resp"] = "<div class='alert alert-danger'>Mensagem não adicionada!</div>";
+            } catch (Exception $ex) {
+                $data["resp"] = "<div class='alert alert-danger'>Mensagem não pode ser adicionada!</div>";
+            }
+            
+        }
+        
+        
         $data["m"] = $manif;
         return view('admin.sistema.manifestacao.detalhes', $data);
+    }
+    
+    public function anexosexcluir($id, $ano, Request $request){
+        $data = array();
+        try{
+            //excluir o anexo
+            $idanexo = $request->input("idanexo");
+            
+            $anexomanif = new \App\AnexoManifestacao();
+            $anexo = \App\AnexoManifestacao::find($idanexo);
+            @unlink(public_path('anexos') . "/" . $anexo->ANEXO_MANIF_nomeArq);
+            
+            $anexo->delete();
+            $msg = "Anexo excluído com sucesso!";
+            $data["resp"] = "<div class='alert alert-success'>" . $msg . "</div>";
+        }  catch (\Exception $e){
+            //echo $e->getMessage();
+            $msg = "Anexo não pode ser adicionado!";
+            $data["resp"] = "<div class='alert alert-danger'>" . $msg . "</div>";
+        }
+        try{
+            $manifestacao = new \App\Manifestacao();
+            $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
+            $manif = $manifDao->buscarId($id, $ano);
+            if($manif == null){
+                $tipoManifest = new \App\TipoManifestacao();
+                $canal = new \App\Canal();
+                $localidade = new \App\Localidade();
+
+                $listaM = $tipoManifest->get();
+                $listaC = $canal->get();
+                $listaL = $localidade->get();
+
+                $data["listaM"] = $listaM;
+                $data["listaC"] = $listaC;
+                $data["listaL"] = $listaL;
+
+                return view('admin.sistema.manifestacao.buscar', $data);
+            }
+
+            $data["m"] = $manif;
+        }catch(\Exception $e){
+            
+        }
+        return view('admin.sistema.manifestacao.passo2', $data);
     }
     
     public function anexos($id, $ano, Request $request){
@@ -487,8 +569,9 @@ class ManifestacaoController extends ConfigController
                 $size = $file->getSize();
                 $msg = "";
 
-                if($size > (1024 * 1024 * 1)){
-                    $msg = "Tamanho máximo de 1mb.<br>";
+                //if($size > (1024 * 1024 * 1)){
+                if($size > (1024 * 300)){
+                    $msg = "Tamanho máximo de 300kb.<br>";
                 }
 
                 if($ext != "jpg" && $ext != "jpeg" && $ext != "png" && $ext != "pdf" && $ext != "doc"){

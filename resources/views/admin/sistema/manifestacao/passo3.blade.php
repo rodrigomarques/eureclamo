@@ -70,7 +70,7 @@
     @foreach($listaMsg as $m)
     <tr>
         <td>{{ $m->PRESTADOR_nome}}</td>
-        <td>{{ $m->PRESTADOR_nome}}</td>
+        <td>{{ $m->SERVICO_nome}}</td>
         <td>{{ $m->MSG_USUARIO_dataHoraMsg}}</td>
         <td>{{ $m->MSG_USUARIO_mensagem }}</td>
     </tr>

@@ -85,7 +85,7 @@
     {{ $horario or '' }}
     <div class="box">
         <div class="box-header with-border">
-            <h4 class="box-title">Lista de Manifestações</h4>
+            <h4 class="box-title">Lista de Manifestações @if(isset($tipoManif)) - {{ $tipoManif->TIPOMANIF_nome }} @endif </h4>
         </div>
         <div class="box-body">
             <table class="table table-condensed">
@@ -127,7 +127,7 @@
                     <td>{{ $m->EMPRESA_nome }}</td>
                     <td>{{ $m->MANIF_ano }}{{ $m->MANIF_id}}</td>
                     <td>{{ $m->RECLAMANTE_nome }}</td>
-                    <td>{{ $m->MANIF_codReclamanteEmp }}</td>
+                    <td>{{ $m->MANIF_EMPRESA_idEmpresa }}{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Cadastro)->format('Ymd') }}{{ $m->MANIF_id }}</td>
                     <td>
                         <a href="{{ route('admin::manifestacao::detalhes', ['ano' => $m->MANIF_ano, 'id' => $m->MANIF_id ])}}" class="btn btn-info">
                             <span class="fa fa-edit"></span>

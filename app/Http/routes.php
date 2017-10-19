@@ -203,6 +203,9 @@ Route::group([ 'prefix' => '/admin/', 'middleware' => ['auth']], function(){
         Route::match(['get', 'post'], '/{id}/{ano}/anexo.html', [ 'uses' => 'ManifestacaoController@anexos', 
              'as' => 'admin::manifestacao::anexos']);
         
+        Route::match(['get', 'post'], '/{id}/{ano}/anexosexcluir.html', [ 'uses' => 'ManifestacaoController@anexosexcluir', 
+             'as' => 'admin::manifestacao::anexosexcluir']);
+        
         Route::match(['get', 'post'], '/{id}/{ano}/concluir.html', [ 'uses' => 'ManifestacaoController@concluir', 
              'as' => 'admin::manifestacao::concluir']);
         
