@@ -15,9 +15,9 @@ class ManifestacaoController extends ConfigController
             try{
                 
                 $dbmanif = new \App\Manifestacao();
-                $manif = $dbmanif->whereManif_tipo_canal_idtipoAndManif_tipo_canal_idcanalAndManif_codreclamanteemp(
-                        $request->input("tipomanif"), $request->input("canalm"), $request->input("codigo"))->first();
-                if($manif == null){
+                //$manif = $dbmanif->whereManif_tipo_canal_idtipoAndManif_tipo_canal_idcanalAndManif_codreclamanteemp(
+                //        $request->input("tipomanif"), $request->input("canalm"), $request->input("codigo"))->first();
+                //if($manif == null){
                 
                 $email= $request->input("email");
                 $nome= $request->input("nome");
@@ -147,9 +147,9 @@ class ManifestacaoController extends ConfigController
 						$data["resp"] = "<div class='alert alert-success'>Manifestação cadastrada com sucesso!</div>";
 						return redirect()->intended('admin/manifestacao/'.$manifestacao->MANIF_ano."/" .$manifestacao->MANIF_id.'/cadastrar-passo2.html');
 					}
-				}else{
-					$data["resp"] = "<div class='alert alert-warning'>Manifestação ja existente!</div>";
-				}
+				//}else{
+				//	$data["resp"] = "<div class='alert alert-warning'>Manifestação ja existente!</div>";
+				//}
             } catch (\Exception $ex) {
 				echo $ex->getMessage();
                 $data["resp"] = "<div class='alert alert-danger'>Manifestação não pode ser realizada!</div>";
@@ -250,7 +250,7 @@ class ManifestacaoController extends ConfigController
                                 $dtformat = $dias . " " . $horas . ":".$minutos.":".$segundos_f;
                             }
                             
-                            $dtformat = $entradaCanal->format("dd/MM/yyyy HH:ii:ss");
+                            $dtformat = $entradaCanal->format("d/M/Y H:i:s");
                         
                             
                             
@@ -513,6 +513,59 @@ class ManifestacaoController extends ConfigController
         
         $data["m"] = $manif;
         return view('admin.sistema.manifestacao.detalhes', $data);
+    }
+    
+    public function concluirmanifestacao(Request $request){
+        date_default_timezone_set('America/Sao_Paulo');
+        $data = array();
+        $manifestacao = new \App\Manifestacao();
+        $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
+        
+        if($request->isMethod("POST")){
+            
+            $idmanif = $request->input("idmanif");
+            $anomanif = $request->input("anomanif");
+            $parecer = $request->input("parecer");
+            
+            $manif = $manifDao->buscarId($idmanif, $anomanif);
+            
+            $manif->MANIF_status = 3;
+              
+            try{
+                
+                $conclusao = new \App\Conclusao();
+                $conclusao->CONCLUSAO_parecer = $parecer;
+                $conclusao-> CONCLUSAO_dataHora = date('Y-m-d H:i:s');
+                $conclusao->MANIFESTACAO_MANIF_id = $idmanif;
+                $conclusao->MANIFESTACAO_MANIF_ano = $anomanif;
+                $conclusao->CONCLUSAO_respReclamante = "";
+                
+                $conclusao->save();
+                
+                if($manif->save())
+                    $data["resp"] = "<div class='alert alert-success'>Manifestação concluída!</div>";
+                else
+                    $data["resp"] = "<div class='alert alert-danger'>Manifestação não concluída!</div>";
+            } catch (Exception $ex) {
+                $data["resp"] = "<div class='alert alert-danger'>Manifestação não pode ser concluída!</div>";
+            }
+            
+        }
+        
+        
+        $tipoManifest = new \App\TipoManifestacao();
+            $canal = new \App\Canal();
+            $localidade = new \App\Localidade();
+            
+            $listaM = $tipoManifest->get();
+            $listaC = $canal->get();
+            $listaL = $localidade->get();
+
+            $data["listaM"] = $listaM;
+            $data["listaC"] = $listaC;
+            $data["listaL"] = $listaL;
+
+            return view('admin.sistema.manifestacao.buscar', $data);
     }
     
     public function anexosexcluir($id, $ano, Request $request){

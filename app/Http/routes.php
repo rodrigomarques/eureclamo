@@ -4,7 +4,8 @@ Route::match(['get', 'post'], '/manifestacao/{ano}/{idmanifestacao}/prestador.ht
     [ 'as' => 'respostaprestador', 'uses' => 'RespostaManifestacaoController@login']);
 Route::match(['get', 'post'], '/manifestacao/{ano}/{idmanifestacao}/respostaprestador.html', 
     [ 'as' => 'respostaprestador', 'uses' => 'RespostaManifestacaoController@respostaprestador']);
-
+Route::match(['get', 'post'], '/manifestacao/vertodas.html', 
+    [ 'as' => 'vertodasprestador', 'uses' => 'RespostaManifestacaoController@vertodas']);
 
 
 Route::match(['get', 'post'], '/', 
@@ -217,5 +218,16 @@ Route::group([ 'prefix' => '/admin/', 'middleware' => ['auth']], function(){
         
         Route::match(['get', 'post'], '/manifestacaomensagem.html', [ 'uses' => 'ManifestacaoController@manifestacaomensagem', 
              'as' => 'admin::manifestacao::manifestacaomensagem']);
+        
+        Route::match(['get', 'post'], '/concluirmanifestacao.html', [ 'uses' => 'ManifestacaoController@concluirmanifestacao', 
+             'as' => 'admin::manifestacao::concluirmanifestacao']);
+    });
+    
+    Route::group(['prefix' => '/relatorio/'], function(){
+        Route::match(['get', 'post'], '/acompanhamento.html', [ 'uses' => 'RelatorioController@acompanhamento', 
+             'as' => 'admin::relatorio::acompanhamento']);
+        
+        Route::match(['get', 'post'], '/acompanhamento-fechado.html', [ 'uses' => 'RelatorioController@acompanhamentofechado', 
+             'as' => 'admin::relatorio::acompanhamentofechado']);
     });
 });

@@ -105,6 +105,11 @@ $(function(){
         Sua empresa acaba de receber uma manifestação efetuada por um cliente junto aos nossos Canais de 
         Atendimento.<br>
         Observe o prazo indicado para sua resposta.
+    </div>
+        
+        <a href="{{ route('vertodasprestador') }}" class="btn btn-info">
+            Ver todas
+        </a>
         
       <div class="box box-primary">
           <div class="box-body">
@@ -161,7 +166,7 @@ $(function(){
               </div>
                   <div class="col-xs-offset-3 col-xs-3 linha">
                       <div class="alert alert-danger">
-                    <b>Responder até: <br></b>
+                    <b>Prazo Restante: <br></b>
                     <?php
                         $dtAtual = \Carbon\Carbon::now('America/Sao_Paulo');
                         $entradaCanal= \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_EntCanal)->addHours($m->MANIF_prazoResposta);
@@ -257,7 +262,8 @@ $(function(){
               
               <?php
               $msgUsuarioDao = new App\Repository\MensagemUsuarioDao(new App\MensagemUsuario);
-              $msgUsuario = $msgUsuarioDao->buscarPorManifestacao($m->MANIF_id, $m->MANIF_ano);
+              //As mensagen todas da manifestacao do prestador logado
+              $msgUsuario = $msgUsuarioDao->buscarPorManifestacaoIdPrestador($m->MANIF_id, $m->MANIF_ano, $idprestador);
               ?>
               @if(count($msgUsuario) > 0)
                   
@@ -285,9 +291,11 @@ $(function(){
                          <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
                          <td>{{ $mm->USUARIO_nome }}</td>
                          <td>
+                             @if($m->MANIF_status != 3)
                              <a href="#resposta" class="btnresponder btn btn-success" data-value="{{ $mm->SERVICO_id }}">
                                  <span class="fa fa-share"></span>
                              </a>
+                             @endif
                          </td>
                      </tr>
                      @endforeach
@@ -341,7 +349,7 @@ $(function(){
                       </div>
                       <input type="hidden" name="idmanif" value="{{ $m->MANIF_id }}" >
                       <input type="hidden" name="anomanif" value="{{ $m->MANIF_ano }}" >
-                      <input type="text" name="idservico" class="idservico" value="" >
+                      <input type="hidden" name="idservico" class="idservico" value="" >
                       <input type="submit" value="RESPONDER" class="btn btn-primary">
                   </form>
                   </div>

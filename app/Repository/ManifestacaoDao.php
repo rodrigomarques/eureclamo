@@ -15,6 +15,15 @@ class ManifestacaoDao {
         $this->model = $e;
     }
     
+    /*
+     * SELECT NOW(), 
+	`MANIF_dataHora_EntCanal`, 
+	`MANIF_prazoResposta`, 
+	TIMESTAMPDIFF(HOUR, NOW(), DATE_ADD(`MANIF_dataHora_EntCanal`, 
+	INTERVAL `MANIF_prazoResposta` HOUR)) AS Restante FROM `manifestacao`
+    ORDER BY Restante
+     */
+    
     public function buscar($idcanal = "", $idtipo = "", $idlocalidade = "", 
             $dtocorrencia = "", $nivel = "", $codigo = ""){
         $result = $this->model
@@ -50,10 +59,11 @@ class ManifestacaoDao {
             $result->Where('MANIF_dataHora_Cadastro', '>=', $dtocorrencia);
         }
         
+        $result->Where('MANIF_status', '!=', 3);
                         
             //$result->orderBy("MANIF_dataHora_Cadastro", "desc");
             $result->orderBy("MANIF_dataHora_EntCanal", "asc");
-            $result->limit(50)            ;
+            $result->limit(50) ;
         return $result->select('*')
                 ->distinct()->get();
     }
@@ -96,6 +106,52 @@ class ManifestacaoDao {
         
         return $result->select('*')
                 ->first();
+    }
+    
+    public function buscarRelatorio($idcanal = "", $idtipo = "", $idempresa = "", 
+            $dtocorrencia = "", $nivel = "", $codigo = "", $status = ""){
+        $result = $this->model
+                ->leftJoin('canal', 'manifestacao.MANIF_TIPO_CANAL_idCanal', '=', 'canal.CANAL_id')
+                ->leftJoin('tipomanifestacao', 'manifestacao.MANIF_TIPO_CANAL_idTipo', '=', 'tipomanifestacao.TIPOMANIF_id')
+                ->leftJoin('produto', 'produto.PRODUTO_id', '=', 'manifestacao.MANIF_PRODUTO_idProduto')
+                ->leftJoin('localidade', 'localidade.LOCALIDADE_id', '=', 'manifestacao.MANIF_LOCALIDADE_id')
+                ->leftJoin('empresa', 'empresa.EMPRESA_id', '=', 'manifestacao.MANIF_EMPRESA_idEmpresa')
+                ->leftJoin('reclamante', 'reclamante.RECLAMANTE_id', '=', 'manifestacao.MANIF_RECLAMANTE_idReclamante')
+                        ;
+        
+        if($idcanal != ""){
+            $result->Where('MANIF_TIPO_CANAL_idCanal', '=', $idcanal);
+        }
+        
+        if($idtipo != ""){
+            $result->Where('MANIF_TIPO_CANAL_idTipo', '=', $idtipo);
+        }
+        
+        if($idempresa != ""){
+            $result->Where('empresa.EMPRESA_id', '=', $idempresa);
+        }
+        
+        if($nivel != ""){
+            $result->Where('MANIF_nivel', '=', $nivel);
+        }
+        
+        if($codigo != ""){
+            $result->Where('MANIF_codReclamanteEmp', '=', $nivel);
+        }
+        
+        if($dtocorrencia != ""){
+            $result->Where('MANIF_dataHora_Cadastro', '>=', $dtocorrencia);
+        }
+        
+        if($status != ""){
+            $result->Where('MANIF_status', '=', $status);
+        }
+                        
+            //$result->orderBy("MANIF_dataHora_Cadastro", "desc");
+            $result->orderBy("MANIF_dataHora_EntCanal", "asc");
+            $result->limit(50)            ;
+        return $result->select('*')
+                ->distinct()->get();
     }
     
 }

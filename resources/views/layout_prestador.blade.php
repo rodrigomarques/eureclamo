@@ -98,82 +98,6 @@
     <section class="sidebar">
         <ul class="sidebar-menu">
             <li class="header">MENU - EU RECLAMO -</li>
-           
-            <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Empresa</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::empresa::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route( 'admin::empresa::buscar')}}">Buscar</a></li>
-          </ul>
-        </li>
-            
-          <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Canal / Manifestação</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::canais::cadastrar')}}">Cadastrar Canal</a></li>
-            <li><a href="{{ route('admin::canais::buscar') }}">Buscar Canal</a></li>
-            <li><a href="{{ route('admin::tipo::cadastrar') }}">Cadastrar Tipo Manifestação</a></li>
-            <li><a href="{{ route('admin::tipo::buscar') }}">Buscar Tipo Manifestação</a></li>
-            <li><a href="{{ route('admin::prazo::adicionar') }}">Cadastrar Prazo</a></li>
-            <li><a href="{{ route('admin::prazo::buscar') }}">Buscar Prazo</a></li>
-          </ul>
-        </li>
-        
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Produto</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::empresa::produto::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route('admin::empresa::produto::buscar') }}">Buscar</a></li>
-          </ul>
-        </li> 
-        
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Serviço</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::prestador::servico::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route('admin::prestador::servico::buscar') }}">Buscar</a></li>
-          </ul>
-        </li>
-        
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Usuario Empresa</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::empresa::usuario::cadastrar')}}">Cadastrar Usuários</a></li>
-            <li><a href="{{ route( 'admin::empresa::usuario::buscar')}}">Buscar Usuários</a></li>
-          </ul>
-        </li>
-        
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Prestador</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::prestador::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route('admin::prestador::buscar') }}">Buscar</a></li>
-          </ul>
-        </li>
         
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Usuário Prestador</span>
@@ -186,39 +110,7 @@
             <li><a href="{{ route( 'admin::prestador::usuario::buscar')}}">Buscar Usuários</a></li>
           </ul>
         </li>
-        <?php /*
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Empresa</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::empresa::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route( 'admin::empresa::usuario::cadastrar')}}">Cadastrar Usuários</a></li>
-            <li><a href="{{ route( 'admin::empresa::usuario::buscar')}}">Buscar Usuários</a></li>
-            <li><a href="{{ route( 'admin::empresa::perfil::cadastrar')}}">Perfil de acesso</a></li>
-            <li><a href="{{ route( 'admin::empresa::perfil::buscar')}}">Buscar Perfil de acesso</a></li>
-            <li><a href="{{ route( 'admin::empresa::produto::cadastrar')}}">Produtos</a></li>
-          </ul>
-        </li> 
-                    
-        <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Prestador</span>
-            <span class="pull-right-container">
-              <i class="fa fa-angle-left pull-right"></i>
-            </span>
-          </a>
-          <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::prestador::cadastrar')}}">Cadastrar</a></li>
-            <li><a href="{{ route( 'admin::prestador::usuario::cadastrar')}}">Cadastrar Usuários</a></li>
-            <li><a href="{{ route( 'admin::prestador::usuario::buscar')}}">Buscar Usuários</a></li>
-            <li><a href="{{ route( 'admin::prestador::perfil::cadastrar')}}">Perfil do prestador</a></li>
-            <li><a href="{{ route( 'admin::prestador::perfil::buscar')}}">Buscar Perfil de acesso</a></li>
-            <li><a href="{{ route( 'admin::prestador::servico::cadastrar')}}">Serviços</a></li>
-          </ul>
-        </li>
-        */ ?>
+        
         <li class="treeview">
           <a href="#"><i class="fa fa-link"></i> <span>Manifestação</span>
             <span class="pull-right-container">
@@ -226,15 +118,12 @@
             </span>
           </a>
           <ul class="treeview-menu">
-            <li><a href="{{ route( 'admin::manifestacao::cadastrar')}}">Cadastrar</a></li>
             <li><a href="{{ route( 'admin::manifestacao::buscar')}}">Buscar</a></li>
-            <li><a href="{{ route( 'admin::manifestacao::reclamante')}}">Reclamantes</a></li>
-            <li><a href="{{ route( 'admin::manifestacao::manifestacaomensagem' )}}">Mensagens</a></li>
           </ul>
         </li>
         
         <li class="treeview">
-          <a href="#"><i class="fa fa-link"></i> <span>Relatórios Clientes</span>
+          <a href="#"><i class="fa fa-link"></i> <span>Relatórios Prestador</span>
             <span class="pull-right-container">
               <i class="fa fa-angle-left pull-right"></i>
             </span>

@@ -9,6 +9,9 @@ use Auth;
 use Hash;
 class RespostaManifestacaoController extends ConfigController
 {
+    /*
+     * Bloquear o prestador a ver a manifestacao apenas dele
+     */
     public function login($ano, $idmanifestacao, Request $request){
         $data = array();
         if($request->isMethod("POST")){
@@ -21,7 +24,7 @@ class RespostaManifestacaoController extends ConfigController
                 ];
                 if(Auth::attempt($credential, true)){
                     $user = Auth::user();
-                    
+                    //maria -- 123
                     if($user->USUARIO_status == 1){
                         //Verificar se ele pode ver esta manifestacao
                         $usuario = $usuarioPDao->buscarId($user->USUARIO_id);
@@ -55,11 +58,10 @@ class RespostaManifestacaoController extends ConfigController
         $idusuario = ($prest->USUARIO_id);
         
         $idprestador = $prest->USUARIO_PREST_idPrestador;
-        
         $manifestacao = new \App\Manifestacao();
         $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
         $manif = $manifDao->buscarId($idmanifestacao, $ano);
-        
+        $data["idprestador"] = $idprestador;
         if($manif == null){
             return redirect()->intended('manifestacao/'.$ano.'/'.$idmanifestacao.'/prestador.html');
         }
@@ -94,5 +96,17 @@ class RespostaManifestacaoController extends ConfigController
         }
         $data["m"] = $manif;
         return view('admin.sistema.respostamanifestacao.respostaprestador', $data);
+    }
+    
+    public function vertodas(Request $request){
+        $data = array();
+        $prest = \Illuminate\Support\Facades\Session::get('prestador');
+        $idusuario = ($prest->USUARIO_id);
+        
+        $idprestador = $prest->USUARIO_PREST_idPrestador;
+        $manifestacao = new \App\Manifestacao();
+        $manifDao = new \App\Repository\ManifestacaoDao($manifestacao);
+        
+        return view('admin.sistema.respostamanifestacao.vertodas', $data);
     }
 }

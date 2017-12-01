@@ -44,11 +44,11 @@
                     }else if(tipomanif == undefined || tipomanif == 0){
                             alert("Escolha um tipo para a manifestação");
                     }else if(dtentradaocorrencia == "" || !checkData(dtentradaocorrencia) || dtAtual < dtN){
-                            alert("Preencha o campo data e hora da ocorrência corretamente");
+                            alert("Datas/Horas Cronologicamente Incorretas");
                     }else if(dtNOcorrencia > dtNCanal){
-                            alert("Preencha o campo data e hora da ocorrência corretamente");
+                            alert("Datas/Horas Cronologicamente Incorretas");
                     }else if(dtNOcorrencia > dtNEntrada){
-                        alert("Preencha o campo data e hora da ocorrência corretamente");
+                        alert("Datas/Horas Cronologicamente Incorretas");
                     }else if(dtNCanal > dtNEntrada){
                         alert("Preencha o campo data e hora da entrada da ocorrência corretamente");
                     }else{

@@ -13,6 +13,26 @@ $(function(){
         $("#dvanexo").hide();
     });
     
+    function esconder(){
+        $(".resposta").fadeOut(1000);
+    }
+
+    setTimeout(esconder, 4000);
+
+    $(".btnresponder").on('click', function(){
+        var idservico = $(this).attr('data-value');
+        
+        $(".lblresposta").show();
+        $(".idservico").val(idservico);
+
+    })
+    
+    $("#telaencerrar").hide();
+    
+    $(".btnencerrar").on('click', function(){
+        $("#telaencerrar").show();
+    })
+    
 })    
 </script>
 <style>
@@ -24,9 +44,31 @@ $(function(){
     <h3 class="page-header" id="titulo">Detalhes Manifestação</h3>
     <div class="row">
     <div class="col-xs-12">
-        <a href="{{ route('admin::manifestacao::passo3', 
+        @if($m->MANIF_status != 3)
+        
+        <form method="post" action="{{ route('admin::manifestacao::concluirmanifestacao') }}" >
+            <a href="#" class="btn btn-info btnencerrar">Encerrar Manifestação</a>
+            <a href="{{ route('admin::manifestacao::passo3', 
                         ['id' => $m->MANIF_id, 'ano' => $m->MANIF_ano ]) }}" 
-       class="btn btn-primary">Notificar Novos Prestadores</a>
+                        class="btn btn-primary">Notificar Novos Prestadores</a>
+            
+            <div id="telaencerrar">
+                <div class="form-group">
+                    Parecer:
+                    <textarea name="parecer" id="parecer" required class="form-control"></textarea>
+                </div>
+                <input type="hidden" name="_token" value="{{ csrf_token() }}">
+
+                <input type="hidden" name="idmanif" value="{{ $m->MANIF_id }}" >
+                <input type="hidden" name="anomanif" value="{{ $m->MANIF_ano }}" >
+                <input type="submit" value="Encerrar Manifestação" class="btn btn-success">
+            </div>
+            
+        </form>
+        
+        
+       @endif
+       
        <br>
        <br>
       <div class="box box-primary">
@@ -67,10 +109,7 @@ $(function(){
                 <b>Código da Manifestação: <br></b>
                 {{ $m->MANIF_EMPRESA_idEmpresa }}{{ \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $m->MANIF_dataHora_Cadastro)->format('Ymd') }}{{ $m->MANIF_id }}
               </div>
-              <div class="col-xs-3 linha">
-                  <b>Serviço: <br></b>
-                 ----------- BUSCAR AINDA -----------
-              </div>
+              
               </div>
               <div class="row">
               <div class="col-xs-3 linha">
@@ -158,9 +197,7 @@ $(function(){
               $msgUsuario = $msgUsuarioDao->buscarPorManifestacao($m->MANIF_id, $m->MANIF_ano);
               ?>
               @if(count($msgUsuario) > 0)
-                  
-                     @foreach($msgUsuario as $mm)
-                     <div class="row">
+                  <div class="row">
               <div class="col-xs-12 linha">
                     <table class="table table-bordered">
                         <tr>
@@ -168,7 +205,10 @@ $(function(){
                             <th>SERVIÇO</th>
                             <th>DATA</th>
                             <th>MENSAGEM</th>
+                            <th></th>
                         </tr>
+                     @foreach($msgUsuario as $mm)
+                     
                      <tr>
                          <td>{{ $mm->PRESTADOR_nome}}</td>
                          <td>{{ $mm->SERVICO_nome}}</td>
@@ -178,9 +218,25 @@ $(function(){
                             @endif
                          </td>
                          <td>{{ $mm->MSG_USUARIO_mensagem }}</td>
+                         <td>
+                             @if($m->MANIF_status != 3)
+                             <a href="#resposta" class="btnresponder btn btn-success" data-value="{{ $mm->SERVICO_id }}">
+                                 <span class="fa fa-share"></span>
+                             </a>
+                             @endif
+                         </td>
                      </tr>
+                    
+                     @endforeach
                      </table>
-                  <form method="post" >
+                  
+                 </div>
+                 </div>
+              @endif
+              
+              <div class="row">
+                  <div class="col-xs-12 linha lblresposta" style="display: none;">
+              <form method="post" id="resposta" >
                       <input type="hidden" name="_token" value="{{ csrf_token() }}">
                       <div class="form-group">
                         Responder mensagem:
@@ -189,21 +245,24 @@ $(function(){
                       <input type="hidden" name="idmanif" value="{{ $m->MANIF_id }}" >
                       <input type="hidden" name="anomanif" value="{{ $m->MANIF_ano }}" >
                       <input type="hidden" name="idprestador" value="{{ $mm->PRESTADOR_id }}" >
-                      <input type="hidden" name="idservico" value="{{ $mm->SERVICO_id }}" >
+                      <input type="hidden" name="idservico" class="idservico" value="{{ $mm->SERVICO_id }}" >
                       <input type="submit" value="RESPONDER" class="btn btn-primary">
                   </form>
-                 </div>
-                 </div>
-                     @endforeach
-                    
-              @endif
-              
+                  </div>
+             </div>
               <?php if($m->MANIF_status != 1): ?>
                 <div class="row">
                   <div class="col-xs-12 linha">
                       <div class="alert alert-info">
                           MANIFESTAÇÃO CONCLUIDA
                       </div>
+                      <?php
+                        $msgConclusao = \App\Conclusao::whereManifestacao_manif_idAndManifestacao_manif_ano($m->MANIF_id, $m->MANIF_ano)
+                                    ->first();
+                        if(isset($msgConclusao) && count($msgConclusao)):
+                            echo $msgConclusao->CONCLUSAO_parecer;
+                        endif;
+                        ?>
                   </div>
                   </div>
                 <?php endif;     ?>
